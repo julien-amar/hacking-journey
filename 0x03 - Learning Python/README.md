@@ -17,7 +17,7 @@ To execute the script you are currently writing, you can type in VIM:
 `:!python %`
 
 ```sh
-$> python hello.py argument "with quotes"    and    spaces
+$> python print.py argument "with quotes"    and    spaces
 ['hello.py', 'argument', 'with quotes', 'and', 'spaces']
 ```
 
