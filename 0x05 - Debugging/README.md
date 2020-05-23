@@ -26,7 +26,7 @@ c[ontinue]                          Continue to next breakpoint or end
 up	                                Go up one context level on stack (to caller)
 down	                            Go down one context level on stack (if up was used)
 l[ist]	                            Show lines of code surrounding the current point
-````
+```
 
 #### Print
 ```
@@ -63,3 +63,21 @@ _Source: https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf_
 * Hopper v4: https://www.hopperapp.com/ _(for Linux or Mac)_
 * IDA: https://www.hex-rays.com/products/ida/main-differences-between-ida-editions/ _(for Windows, Linux or Mac)_
 * Radare2 & Cutter: https://rada.re/n/ & https://cutter.re/ _(multi-platform)_
+
+
+### Radare2
+
+#### Basic commands
+
+```
+<command>?      Show help for the current command
+aaa             Analyse the provided binary
+afl             Print all functions
+s <location>    Seek location
+pdf             Print disassembly of the current location
+VV              Enable visual mode (control graph)
+db              Add a breakpoint to the current location
+dc              Run the program
+```
+
+_For more detail about the visual mode: https://monosource.gitbooks.io/radare2-explorations/content/intro/visual_graphs.html_
