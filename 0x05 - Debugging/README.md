@@ -70,14 +70,17 @@ _Source: https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf_
 #### Basic commands
 
 ```
-<command>?      Show help for the current command
-aaa             Analyse the provided binary
-afl             Print all functions
-s <location>    Seek location
-pdf             Print disassembly of the current location
-VV              Enable visual mode (control graph)
-db              Add a breakpoint to the current location
-dc              Run the program
+<command>?              Show help for the current command
+aaa                     Analyse the provided binary
+afl                     Print all functions
+s <location>            Seek location
+pdf                     Print disassembly of the current location
+VV                      Enable visual mode (control graph)
+db                      Add a breakpoint to the current location
+dc                      Run the program
+dr                      Display registers
+dr <register>=<value>   Set register value
+afvn <variable> <name>  Rename a disassembled variable name to a new one.
 ```
 
 _For more detail about the visual mode: https://monosource.gitbooks.io/radare2-explorations/content/intro/visual_graphs.html_
