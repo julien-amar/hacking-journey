@@ -70,6 +70,8 @@ i                   Insertion mode
 :set number         Show line numbers in the editor
 
 <d><d>              Remove the current line
+<y><y>              Copy the current line to the clipboard
+<p>                 Paste the content of the clipboard.
 
 :!<command>         Execute the command
 

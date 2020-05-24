@@ -76,7 +76,7 @@ afl                     Print all functions
 s <location>            Seek location
 pdf                     Print disassembly of the current location
 VV                      Enable visual mode (control graph)
-db                      Add a breakpoint to the current location
+db <location>           Add a breakpoint to the specified location
 dc                      Run the program
 dr                      Display registers
 dr <register>=<value>   Set register value
