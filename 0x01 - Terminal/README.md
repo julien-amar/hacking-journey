@@ -31,7 +31,7 @@ chmod +<perm> <path>    Add the specific permission to the path
 
 Each distribution use a different package maanger. Distribution based on debian (like ubuntu, kali, ...) use `apt`.
 
-To update your distribution you need to uptdate your package cache and then upgrade your packages:
+To update `apt` based distribution, you need to uptdate your package cache and then upgrade your packages:
 ```sh
 $> sudo apt-get update
 $> sudo apt-get upgrade
@@ -39,7 +39,7 @@ $> sudo apt-get upgrade
 
 ## Bash
 
-Bash  is  an sh-compatible command language interpreter that executes commands read from the standard input or from a file.
+Bash  is  a sh-compatible command language interpreter that executes commands read from the standard input or from a file.
 
 When it starts, it automatically load the following files:
 * /etc/bash.bashrc
@@ -52,7 +52,6 @@ When it starts, it automatically load the following files:
 Binaries are located through the `PATH` environment variable.
 
 You can add additionnal location to look for binaries using the `export` built-in: `export  PATH=$PATH:/home/bin`
-
 
 `whereis <command> ` enables to locate a specific binary, source, and manual page files.
 

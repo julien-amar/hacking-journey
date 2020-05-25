@@ -8,9 +8,9 @@ Mac: https://en.wikipedia.org/wiki/Mach-O (Mach object)
 
 ## file
 
-`file <file>` enable to determine a speicifc file type (based on magic table).
+`file <file>` enable to determine a specific file type (based on magic table).
 
-Indexed magic database is defined in:
+Indexed magic database is accessible at those locations:
 * `/etc/magic` (local definition)
 * in the binary file `/usr/share/misc/magic.mgc`
 * spread over multiple fragment in `/usr/share/misc/magic`
@@ -30,7 +30,7 @@ _Documentation: https://docs.microsoft.com/en-us/cpp/build/reference/dumpbin-ref
 
 ## objdump (PE or ELF files)
 
-Objdump enables to retrieve a lot of information from a binary file (headers, debugging informations, symbols, ...)
+Objdump enables to retrieve information from a binary file (headers, debugging informations, symbols, ...)
 
 `objdump -d <file>` enables to disassemble a specific binary.
 `objdump -x <file>` enables to display all available header information, including the symbol table and relocation entries.
@@ -40,6 +40,7 @@ _For more details: https://www.systutorials.com/docs/linux/man/1-objdump/_
 ### Headers
 
 Program headers information, enable to identify if Stack informations are executable. (this can be a suitable information for a possible buffer overflow exploit)
+
 ```
 STACK off    0x0000000000000000 vaddr 0x0000000000000000 paddr 0x0000000000000000 align 2**4
          filesz 0x0000000000000000 memsz 0x0000000000000000 flags rw-
@@ -47,7 +48,7 @@ STACK off    0x0000000000000000 vaddr 0x0000000000000000 paddr 0x000000000000000
 
 ### Sections
 
-Each part of our binary is spread among several sections:
+Binary are splitted over several sections, among them:
 * `.text` section holds the application code
 * `.rodata` section holds our readonly data, such as binary's strings
 

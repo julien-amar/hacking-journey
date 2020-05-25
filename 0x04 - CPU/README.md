@@ -33,11 +33,31 @@ Jump instruction is similar to changing the `rip` register to the specified valu
 ### Call
 
 A function can be called in multiple places, to allow this behaviour, we will need to know where to go back when the function returned its result. To do so, the address where the call (`rip` register) was made is pushed to the stack.
-The `ret` instruction, will store the function result in `eax`, and `pop` the address to continue where we originaly came from.
+
+The `ret` instruction, will store the function result in `eax`, and `pop` the address to continue where we originaly came from by restoring the previous stack frame information.
 
 ## Memory management
 
 The number of register is limited, therefor, everything that does not fit in the registers should be stored in memory (HEAP or STACK).
+
+```
++-------------+ <- 0xffffffff
+|             |
+|    STACK    |
+|             |
++vvvvvvvvvvvvv+ 
+|             |
+|             |
++^^^^^^^^^^^^^+ 
+|             |
+|    HEAP     |
+|             |
++-------------+ 
+|             |
+|  PROGRAM    |
+|             |
++-------------+ <- 0x00000000
+```
 
 ## Heap
 
@@ -46,8 +66,8 @@ The Heap is a block of memory that aims at storing long term information through
 You can interact with it through the instructions `mov`:
 
 ```c
-// Store the referenced value (address: 14) in the register eax
-mov eax, [14]
+// Store the referenced value (address: 0x14) in the register eax
+mov eax, [0x14]
 ```
 
 ## Stack
@@ -63,6 +83,20 @@ You can interact with it through the instructions `pop` and `push`:
 push 0x05
 // Pop 5 from the stack, and increase the value of esp.
 pop eax
+```
+
+Stack is composed of multiple frames, they compose the call stack. Each stack frame reference the previous one:
+```
++--------------+
+|   PREVIOUS   |
+| STACK  FRAME |
++--------------+ 
+| PREVIOUS RBP |
++--------------+ <- current RBP (begining of current stack frame)
+|              |
+|     DATA     |
+|              |
++--------------+ <- current RSP (end of current stack frame)
 ```
 
 ## Resources

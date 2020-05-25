@@ -23,9 +23,11 @@ int main(int argc, char*argv[]) {
 `argc` contains the number of arguments passed to the executable
 `argv` contains the values of arguments passed to the executable
 
-All C functions are documented in `man`. For `printf`,  you can access it through `man 3 printf`.
+All C functions are documented in `man`.
+By example, for `printf`,  you can access it through `man 3 printf`.
 
 ## Compilation
+
 You can now compile your program with the following:
 ```sh
 $> gcc hello.c -o hello -Wall
@@ -50,6 +52,9 @@ Knock, knock, ange
 
 # Pass "$USER" as a parameter, without being interpreted by the shell. 
 $> ./hello \$USER
+Knock, knock, $USER
+
+$> ./hello '$USER'
 Knock, knock, $USER
 ```
 

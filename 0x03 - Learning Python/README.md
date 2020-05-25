@@ -26,14 +26,14 @@ $> python print.py argument "with quotes"    and    spaces
 
 | From  | To    | Code                     | Result      |
 |-------|-------|--------------------------|-------------|
-| dec   | bin   | bin(123)                   | '0b1111011' |
-| dec   | hex   | hex(123)                   | '0x7b'      |
-| bin   | dec   | int('0x1111011', 2)        | 123         |
-| bin   | hex   | hex(int('0x1111011', 2))   | '0x7b'      |
-| hex   | dec   | int('0x7b', 16)            | 123         |
-| hex   | bin   | bin(int('0x7b', 16))       | '0b1111011' |
-| hex   | ascii | "\x41\x42"                 | 'AB'        |
-| ascii | hex   | b"AB".hex()                | '4142'      |
+| dec   | bin   | bin(123)                 | '0b1111011' |
+| dec   | hex   | hex(123)                 | '0x7b'      |
+| bin   | dec   | int('0x1111011', 2)      | 123         |
+| bin   | hex   | hex(int('0x1111011', 2)) | '0x7b'      |
+| hex   | dec   | int('0x7b', 16)          | 123         |
+| hex   | bin   | bin(int('0x7b', 16))     | '0b1111011' |
+| hex   | ascii | "\x41\x42"               | 'AB'        |
+| ascii | hex   | b"AB".hex()              | '4142'      |
 
 ## Packing / Unpacking
 
@@ -44,10 +44,11 @@ value # 1145258561
 hex(value) # '0x44434241'
 ```
 
-As we can notice in the example above, the hex conversion in **reversed**. This is due to **endianess** of the system.
+As we can notice in the example above, the hex conversion is **reversed**. This is due to **endianess** of the system.
 In little endian architecture, the least significant bit is stored on the lowest address.
 
 The packing library handle the endianess:
+
 ```python
 value = struct.unpack(">I", b"ABCD")[0]
 value # 1094861636
@@ -58,7 +59,7 @@ _Documentation: https://docs.python.org/3/library/struct.html & https://en.wikip
 
 ## VIM configuration
 
-You can configure indentation using the following VIM command:
+Indentation is import when working in python, you can configure it using the following VIM command:
 ```
 :set expandtab shiftwidth=4 softtabstop=4
 ```

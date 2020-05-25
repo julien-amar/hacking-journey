@@ -1,7 +1,7 @@
 # Anti Debugging techniques
 
 Debugger, decompilers & binary loaders implement their own version of binary parser to analyize/execute it.
-It means that, there might be some way of preventing a specific binary to be debugger or analyzed and keep its ability to run by altering it's structure.
+It means that, there might be some way of preventing a specific binary to be loaded/debugged/analyzed by altering its structure.
 
 _Presentation: https://www.blackhat.com/docs/us-14/materials/arsenal/us-14-Hernandez-Melkor-Slides.pdf_
 
