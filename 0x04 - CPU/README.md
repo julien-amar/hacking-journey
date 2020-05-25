@@ -34,7 +34,7 @@ Jump instruction is similar to changing the `rip` register to the specified valu
 
 A function can be called in multiple places, to allow this behaviour, we will need to know where to go back when the function returned its result. To do so, the address where the call (`rip` register) was made is pushed to the stack.
 
-The `ret` instruction, will store the function result in `eax`, and `pop` the address to continue where we originaly came from by restoring the previous stack frame information.
+The `leave` & `ret` instructions, will store the function result in `eax`. and `pop` the address to continue where we originaly came from by restoring the previous stack frame information.
 
 ## Memory management
 

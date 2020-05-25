@@ -56,6 +56,21 @@ i[nfo] registers                    List all registers
 set $<register>=<value>             Update a register value
 ```
 
+#### Mapping
+```
+i[nfo] proc mappings                Display memory mapping structure of our process
+```
+
+#### Hooks
+
+We can define a hook that display the registers, the stack and the two following instructions when we reach a breakpoint:
+```
+define hook-stop
+info registers
+x/24wx $esp
+x/2i $eip
+```
+
 _Source: https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf_
 
 ## Alternative debuggers
