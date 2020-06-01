@@ -24,9 +24,9 @@ _Source: https://en.wikipedia.org/wiki/Protection_ring_
 
 ### Syscalls
 
-Syscalls are executed through a `syscall` instruction. this instruction is always prefixed by a `mov eax, <code>` that indicates to the kernel what needs to be processed.
+Syscalls are executed through a `syscall` instruction. This instruction is always prefixed by a `mov eax, <code>` that indicates to the kernel what needs to be processed.
 
-When the Kernel requires to access some data from/to the user land, it will copy that data from/to the user land using `copy_from_user` or `copy_to_user` method.
+When the Kernel requires to access some data from/to the user land, it will copy that data from/to the user land using `copy_from_user` or `copy_to_user` methods.
 
 _For mroe details: https://filippo.io/linux-syscall-table/_
 
