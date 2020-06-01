@@ -33,6 +33,7 @@ l[ist]	                            Show lines of code surrounding the current po
 p[rint] <location>                  Print value of variable called <location>
 p[rint] *<location>                 Print what is pointed to by <location>
 p/x <location>                      Print value of <location> in hex format
+p/s <location>                      Print the string stored at <location>.
 p[rint] <location> @ <n>            Print <n> values starting at <location>
 ```
 
