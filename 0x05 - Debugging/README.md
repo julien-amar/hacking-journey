@@ -56,6 +56,12 @@ i[nfo] registers                    List all registers
 set $<register>=<value>             Update a register value
 ```
 
+#### Threads
+```
+i[nfo] threads                      List all threads
+thread <value>                      Select a specific thread
+```
+
 #### Mapping
 ```
 i[nfo] proc mappings                Display memory mapping structure of our process
