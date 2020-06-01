@@ -87,16 +87,18 @@ pop eax
 
 Stack is composed of multiple frames, they compose the call stack. Each stack frame reference the previous one:
 ```
-+--------------+
-|   PREVIOUS   |
-| STACK  FRAME |
-+--------------+ 
-| PREVIOUS RBP |
-+--------------+ <- current RBP (begining of current stack frame)
-|              |
-|     DATA     |
-|              |
-+--------------+ <- current RSP (end of current stack frame)
++-----------------+
+|     PREVIOUS    |
+|  STACK   FRAME  |
++-----------------+ 
+| RETURN  POINTER |
++-----------------+ <- current RBP (begining of current stack frame)
+|  PREVIOUS  RBP  |
++-----------------+ 
+|                 |
+|      DATA       |
+|                 |
++-----------------+ <- current RSP (end of current stack frame)
 ```
 
 ## Resources
