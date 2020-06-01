@@ -18,7 +18,7 @@ _Source: https://www.cyberciti.biz/faq/understanding-etcpasswd-file-format/_
 
 ## Passwords
 
-Passwords are stored in `/etc/shadow`, it's sturctured this way:  
+Passwords are stored in `/etc/shadow`, it's structured this way:  
 * **Username** : It is your login name.
 * **Password** : It is your encrypted password. The password should be minimum 8-12 characters long including special characters, digits, lower case alphabetic and more. Usually password format is set to $id$salt$hashed, The $id is the algorithm used On GNU/Linux as follows:
   * $1$ is MD5
