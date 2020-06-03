@@ -74,8 +74,9 @@ We can define a hook that display the registers, the stack and the two following
 ```
 define hook-stop
 info registers
-x/24wx $esp
-x/2i $eip
+x/24wx $rsp
+x/2i $rip
+end
 ```
 
 _Source: https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf_
