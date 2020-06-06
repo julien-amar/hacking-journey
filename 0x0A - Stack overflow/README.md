@@ -258,3 +258,50 @@ Linux host 4.15.0-101-generic #102-Ubuntu SMP Mon May 11 10:07:26 UTC 2020 x86_6
 ```
 
 Congratulation !
+
+## Stack Protection
+
+### Return to libc
+
+In order to prevent buffer overflow exploits, stack and heap memory areas can be marked (or not) as executable.
+
+To overcome this kind of limitation, you can proceed a **ret2libc** attack. This kind of attack rely on the fact that some binary instructions are already loaded with your program, in a dedicated executable memory section.
+
+In order to exploit such behavior, you have to compose the stack as described bellow & redirect the instruction pointer to the system address:
+
+```
++-----------------+
+|     PREVIOUS    |
+|  STACK   FRAME  |
++-----------------+ 
+| RETURN  POINTER | <- containing the address of the system function in libc
++-----------------+ 
+|  PREVIOUS  RBP  | <- can be randomized
++-----------------+ 
+|      DATA       | <- containing the address of "/bin/sh" in libc
++-----------------+ 
+```
+
+Documentation: https://en.wikipedia.org/wiki/Executable_space_protection
+Documentation: https://en.wikipedia.org/wiki/Return-to-libc_attack
+
+#### Protection
+
+Address space layout randomization (ASLR), enables to make this kind of attack harder, as the address where the libc is loaded can vary from an execution to another.
+
+Documentation: https://en.wikipedia.org/wiki/Address_space_layout_randomization
+
+### ROP (Gadgets)
+
+The goal of this attack (similar to ret2libc), is to redirect the execution flow, over several program sections that enable code execution, by chaining small portion of instructions.
+
+Project: https://github.com/JonathanSalwan/ROPgadget
+Documentation: https://en.wikipedia.org/wiki/Return-oriented_programming
+
+#### Protection
+
+Many protection are available against this kind of attack, most of them ensure the code is randomized or avoid using `call`/`ret` instructions.
+
+Pointer Authentication Codes (PAC), provides a protection by authenticating pointers by signing those using unused bits.
+
+For more details: https://en.wikipedia.org/wiki/Return-oriented_programming#Defenses
