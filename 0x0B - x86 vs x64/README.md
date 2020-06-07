@@ -27,3 +27,4 @@ In order to run this script, you have to provide both the source file you want t
 
 Here is a screenshot of what you should expect:
 
+![Screenshot](https://github.com/julien-amar/hacking-journey/blob/master/0x0B - x86 vs x64/bin-comparer.png?raw=true)
