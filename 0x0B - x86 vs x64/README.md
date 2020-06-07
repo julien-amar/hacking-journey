@@ -11,7 +11,7 @@ We do use the following compilation flags: `-O0 -ggdb3 --std=c99 -Wall -Wextra -
 | `float` types are handled by instruction set:   | `*ss`                                                             | `f*`                                                 |
 | `double` types are handled by instruction set:  | `*sd`                                                             | `f*`                                                 |
 | `float` arguments are handled by registers:     | `xmm*`                                                            | -                                                    |
-| `array` intialization                           | valuies are loaded to stack directly                              | values are loaded from stack and array is duplicated |
+| `array` intialization                           | values are loaded to stack directly                               | values are loaded from stack and array is duplicated |
 | `float` are accessed from:                      | `stack`                                                           | a dedicated section (address)                        |
 | `string` are accessed from:                     | the program section, relative to `rip`                            | a dedicated section (address)                        |
 | call to parameterless function:                 | assign `eax` to `0` before the call                               | -                                                    |
