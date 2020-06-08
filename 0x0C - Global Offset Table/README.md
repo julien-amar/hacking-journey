@@ -13,3 +13,12 @@ Documentation: https://ctf101.org/binary-exploitation/relocation-read-only/
 # Procedure Linkage Table (PLT)
 
 To do the resolution, some trampoline functions (PLT) are injected in the program, to interface with the GOT, those functions are responsible for calling the dynamic linker.
+
+# Dynamic loading
+
+Along your program, it is possible to load additionnal information (or even override some library or methods), by configuring ld, through:
+* Environment variable LD_LIBRARY_PATH or LD_PRELOAD. Except if the executable is a setuid/setgid binary, in which case it is ignored.
+* From the cache file /etc/ld.so.cache which contains a compiled list of candidate libraries previously found in the augmented library path.
+* In the default path /lib, and then /usr/lib.
+
+For mroe details: https://manpages.ubuntu.com/manpages/precise/man8/ld.so.8.html
