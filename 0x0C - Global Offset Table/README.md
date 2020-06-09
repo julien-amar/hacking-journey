@@ -1,7 +1,7 @@
 # Global Offset Table (GOT)
 
 In order to reduce binary size, from reusable protion of code can be extrated and shared: a library (*.so, *.dll) could be provided.
-All required libraries are loaded on porogram start. However, the program have to know on which address those functions are available (especially when ASLR is enabled).
+All required libraries are loaded on program start. However, the program have to know on which address those functions are available (especially when ASLR is enabled).
 The GOT's purpose is to answer this problematic, it basically keep a reference to dependent library functions.
 
 By default, the GOT is writable, as the resolution of such function is done by the loader (ld.so) during the first call.
