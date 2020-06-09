@@ -1,6 +1,6 @@
 # x86 vs x64
 
-For this study we will study how a C program is compiled (using gcc 9.3.0), and what are the main difference between those two infrastructure.
+We will study how a C program is compiled (using gcc 9.3.0), and what are the main difference between those two infrastructures.
 
 We do use the following compilation flags: `-O0 -ggdb3 --std=c99 -Wall -Wextra -pedantic`
 
