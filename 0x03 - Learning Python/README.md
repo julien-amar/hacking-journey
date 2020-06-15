@@ -14,17 +14,17 @@ else:
 ## Execution
 
 To execute the script you are currently writing, you can type in `VIM`:
-`:!python3 %`
+`:!python %`
 
 You can also execute it in a shell:
 ```sh
-$> python3 print.py argument "with quotes"    and    spaces
+$> python print.py argument "with quotes"    and    spaces
 ['hello.py', 'argument', 'with quotes', 'and', 'spaces']
 ```
 
 You can also execute a single line of python to exploit a specific binary:
 ```sh
-$> python3 -c 'print("A"*(4+16*3+14))' | ./exploit
+$> python -c 'print "A"*(4+16*3+14)' | ./exploit
 Congratulation, you changed the variable, using a buffer overflow technique.
 ```
 
