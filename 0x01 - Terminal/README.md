@@ -20,8 +20,10 @@ echo <text>             Display <text>
 uname [-a]              Print system information
 free [-h]               Display amount of free and used memory in the system
 df [-h]                 Report file system disk space usage
+du [-sh] <folders>      Show how much space the folders take
 ps [aux]                Report a snapshot of the current processes
 pstree -aClp            Report the process/thread tree (with command line)
+lsof <file>             Show processes that open a given file
 id                      Print real and effective user and group IDs
 hexdump                 Display data in hex/oct/ascii/dec format
 file <file>             Determine <file> type
