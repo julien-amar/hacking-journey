@@ -21,10 +21,13 @@ uname [-a]              Print system information
 free [-h]               Display amount of free and used memory in the system
 df [-h]                 Report file system disk space usage
 ps [aux]                Report a snapshot of the current processes
+pstree -aClp            Report the process/thread tree (with command line)
 id                      Print real and effective user and group IDs
 hexdump                 Display data in hex/oct/ascii/dec format
 file <file>             Determine <file> type
 chmod +<perm> <path>    Add the specific permission to the path
+ldd <binary>            Print shared object dependencies
+netstat -ac             Print network connections continuously
 ```
 
 ## Package manager
