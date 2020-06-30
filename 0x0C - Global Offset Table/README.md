@@ -17,8 +17,81 @@ To do the resolution, some trampoline functions (PLT) are injected in the progra
 # Dynamic loading
 
 Along your program, it is possible to load additionnal information (or even override some library or methods), by configuring ld, through:
-* Environment variable LD_LIBRARY_PATH or LD_PRELOAD. Except if the executable is a setuid/setgid binary, in which case it is ignored.
-* From the cache file /etc/ld.so.cache which contains a compiled list of candidate libraries previously found in the augmented library path.
-* In the default path /lib, and then /usr/lib.
+* Environment variable `LD_LIBRARY_PATH` or `LD_PRELOAD`. Except if the executable is a setuid/setgid binary, in which case it is ignored.
+* From the cache file `/etc/ld.so.cache` which contains a compiled list of candidate libraries previously found in the augmented library path.
+* In the default path `/lib`, and then `/usr/lib`.
 
 For mroe details: https://manpages.ubuntu.com/manpages/precise/man8/ld.so.8.html
+
+## LD_PRELOAD
+
+Through this section, we will describe how to override an external function by your own.
+
+We will use following program (`main.c`), generating random numbers:
+
+```c
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+
+int main(int argc, char** argv)
+{
+  srand(time(NULL));
+  int x = rand();
+  printf("%d\n", x);
+  return 0;
+}
+```
+
+Compile the program and execute it:
+
+```sh
+$ gcc -Wall main.c -o program
+$ ./program 
+1080548345       
+$ ./program 
+1540100247 
+```
+
+`rand` is a `libc` function, that returns random numbers. We will compile and execute our program:
+
+```sh
+$ ldd ./program 
+  linux-vdso.so.1 (0x00007ffffa442000)
+  libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ff483910000)
+  /lib64/ld-linux-x86-64.so.2 (0x00007ff483af7000)
+```
+
+We will create a library (`override.c`) that will override the `rand` function of the `libc`:
+
+```c
+#define _GNU_SOURCE
+
+#include <stdio.h>
+#include <dlfcn.h>
+
+typedef int (*rand_t)(void);
+
+int rand(void)
+{
+  rand_t base = (rand_t)dlsym(RTLD_NEXT, "rand");
+  int x = base();
+  int returned_value = 42;
+  printf("Returning %d instead of %d\n", returned_value, x);
+  return returned_value;
+}
+```
+
+Compile the override library and execute the intial program with your library:
+
+```sh
+$ gcc -shared -fPIC -Wall override.c -o override.so -ldl
+$ LD_PRELOAD=./override.so ./program
+Returning 42 instead of 1560828960
+42
+$ LD_PRELOAD=./override.so ./program
+Returning 42 instead of 1260732614
+42
+```
+
+The paramter `-fPIC`: Position Independent Code, means that the generated machine code is not dependent on being located at a specific address in order to work.
