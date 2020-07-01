@@ -17,7 +17,7 @@ class UDPproxy(Thread):
         self.server_host, self.server_port = self.server = utils.ip_to_tuple(server)
 
     def run(self):
-        print('{}:{} <-> {}:{}'.format(self.client_host, self.client_port, self.server_host, self.server_port))
+        print('{}:{} <-> {}:{} (UDP)'.format(self.client_host, self.client_port, self.server_host, self.server_port))
         
         self.proxy_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.proxy_socket.bind(self.client)

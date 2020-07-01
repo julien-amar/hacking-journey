@@ -19,7 +19,7 @@ class TCPproxy(Thread):
         self.server_host, self.server_port = self.server = utils.ip_to_tuple(server)
 
     def run(self):
-        print('{}:{} <-> {}:{}'.format(self.client_host, self.client_port, self.server_host, self.server_port))
+        print('{}:{} <-> {}:{} (TCP)'.format(self.client_host, self.client_port, self.server_host, self.server_port))
         
         proxy = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         proxy.bind(self.client)
