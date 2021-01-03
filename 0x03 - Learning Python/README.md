@@ -63,6 +63,17 @@ hex(value) # '0x41424344'
 
 _Documentation: https://docs.python.org/3/library/struct.html & https://en.wikipedia.org/wiki/Endianness_
 
+## Interactive session
+
+In order to get an interactive python shell when your script exit, you can either:
+* specify the `PYTHONINSPECT` environement variable when running your script
+* specify the `-i` parameter.
+
+## Builtins
+
+Builtin functions are globally available through this dictionary: `__builtins__.__dict__['print']('Hello !')`
+Using this dictionary, you can override default implementation of python builtins.
+
 ## VIM configuration
 
 Indentation is import when working in python, you can configure it using the following VIM command:
