@@ -58,6 +58,11 @@ i[nfo] registers                    List all registers
 set $<register>=<value>             Update a register value
 ```
 
+#### Processes
+```
+set follow-fork-mode child          Enable to follow the child process when using fork()
+```
+
 #### Threads
 ```
 i[nfo] threads                      List all threads
