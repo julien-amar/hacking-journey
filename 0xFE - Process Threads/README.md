@@ -1,4 +1,4 @@
-# Process structure
+# Process structure (Linux)
 
 As everything is a file on Linux, all process informations can be acceced through the pseudo-file system in `/proc/{pid}`
 
