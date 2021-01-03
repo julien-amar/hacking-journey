@@ -1,5 +1,13 @@
 # Network Analyze
 
+## Network interfaces
+
+Every network devices, is asigned a network interface, to interact with it.
+
+However, a loopback (lo) device is available. It is a virtual network interace that your computer use to communicate with itself.
+
+By convention, the IPv4 assigned to this interface is `127.0.0.1` and `::1` for IPv6.
+
 ## Wireshark
 
 Wireshark is a network protocol analyzer. It lets you see what’s happening over a network/USB connection.
