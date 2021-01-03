@@ -87,6 +87,19 @@ end
 
 _Source: https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf_
 
+## Core dumps
+
+A memory dump of the process can be generated under certain signals, at the exact time the process has terminated.
+
+_For more details: https://man7.org/linux/man-pages/man5/core.5.html_
+
+Core dumps can be loaded with GDB, using the following syntax:
+```
+gdb <binary> <core dump>
+```
+
+Once the dump is loaded, the user is able to access the stack, registers, heap, etc.
+
 ## Alternative debuggers
 
 * Hopper v4: https://www.hopperapp.com/ _(for Linux or Mac)_
