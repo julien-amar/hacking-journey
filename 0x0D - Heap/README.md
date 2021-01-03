@@ -152,3 +152,13 @@ login
 you have logged in already!
 [ auth = 0x600e40, service = 0x600e40 ]
 ```
+
+## Heap Three
+
+### Exercise
+
+Description: https://exploit.education/phoenix/heap-three/
+
+### Solution
+
+The solution is well described in Lucas Bader's blog, I highly encourage you to read it: https://www.lucas-bader.com/ctf/2019/05/02/heap3
