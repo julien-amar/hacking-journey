@@ -8,6 +8,38 @@ However, a loopback (lo) device is available. It is a virtual network interace t
 
 By convention, the IPv4 assigned to this interface is `127.0.0.1` and `::1` for IPv6.
 
+## Protocols
+
+The most common protocols you might encounter are:
+* `TCP`: help to understand which process/program on this target machine is expecting to recieve this packet. (data exchange)
+* `IP`: determine the target we want to reach (routing).
+
+`TCP/IP` combination is used by the Internet by web browsers/email clients/etc.
+
+## TCP (Transmission Control Protocol)
+
+TCP is a standard that defines how to establish and maintain a network conversation through which application programs can exchange data.
+
+A TCP connection is established through 3 steps, to exchange a sequence number:
+* `SYN`: Connection request by client
+* `SYN+ACK`: Acknowledgment and connection request by server
+* `ACK`: Acknowledgment by client
+
+![TCP Connection](tcp/tcp-connection.png)
+
+_Source: http://www.tcpipguide.com/free/t_TCPConnectionEstablishmentSequenceNumberSynchroniz-2.htm_
+
+After connection is established, the sequence number will enable to detect possible loss of packet or be resiliant to timeout.
+
+If the data contained in a paquet is too big to fit in, multiple paquets will be emited. (ending data transmission with a `PSH` flag)
+
+When the initiator is closing the connection, the following sequence is emited to alert the server:
+* `FIN`: Disconnection request by client
+* `FIN/ACK`: Disconnection & Acknowledgment from the server
+* `ACK`: Acknowledgment from the client, that connection had been closed on both sides.
+
+TCP is resiliant to `package loss`, if a paquet had not been aknowledged as recieved, it will be re-emited by the sender. This process could cause some latency issues, as the receiver must wait for the lost packet to be recieved to continue presenting the stream in proper order.
+
 ## Wireshark
 
 Wireshark is a network protocol analyzer. It lets you see what’s happening over a network/USB connection.
