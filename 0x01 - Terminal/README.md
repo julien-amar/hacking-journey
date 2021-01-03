@@ -40,6 +40,8 @@ netstat -ac             Print network connections continuously
 netstat -pl             Print listening network connections with associated process identifier. 
 ```
 
+An interactive MAN exploration solution is available here: https://explainshell.com/
+
 ## Package manager
 
 Each distribution use a different package maanger. Distribution based on debian (like ubuntu, kali, ...) use `apt`.
