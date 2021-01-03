@@ -4,6 +4,13 @@
 
 On linux, everything is represented as a file descriptor: https://en.wikipedia.org/wiki/Everything_is_a_file
 
+## Standard Streams
+
+On linux, when a program is executed, it already has three predefined streams open and available for usesome special file descriptors:
+* stdin (0), used as standard program input.
+* stdout (1), used as standard program output.
+* stderr (2), used as standard program error output.
+
 # Terminal
 
 ## Useful commands
@@ -30,6 +37,7 @@ file <file>             Determine <file> type
 chmod +<perm> <path>    Add the specific permission to the path
 ldd <binary>            Print shared object dependencies
 netstat -ac             Print network connections continuously
+netstat -pl             Print listening network connections with associated process identifier. 
 ```
 
 ## Package manager
