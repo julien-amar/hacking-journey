@@ -5,7 +5,7 @@ As everything is a file on Linux, all process informations can be acceced throug
 Through this folder, all the process relative information can be retrieved, such as:
 * network (net)
 * file descriptors (fd)
-* memory map (maps)
+* memory map (mem & maps)
 * threads
 * environment variables (environ)
 * arguments (cmdline)
