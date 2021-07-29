@@ -1,6 +1,6 @@
 # Cryptanalysis
 
-This list is just a short list of possible decryption tools:
+Short list of possible decryption tools:
 
 * Base64
    - Javascript: `atob(btoa("Hello"))`
@@ -25,7 +25,7 @@ To decode RSA encrypted content, you can use `openssl`:
 ```
 openssl enc -d -aes-256-cbc -in <file> -out <output> -pass pass:<key> -nosalt -iv <iv>
 ```
-Initialisation vectore (iv), if not set can be set to: `00000000000000000000000000000000`
+Initialisation vectore (iv), if not set, will be assigned to: `00000000000000000000000000000000`
 
 
 ## John the Ripper

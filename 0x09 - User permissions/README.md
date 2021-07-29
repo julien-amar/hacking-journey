@@ -1,15 +1,15 @@
 # User permission
 
-Current identity can be retrieved through `id` & `groups` command.
-All identity related information, is spread accross several files.
+Current authenticated user identity can be retrieved through `id` & `groups` commands.  
+On Linux, all identity related information, is spread accross several files.
 
 ## Users
 
 User database is accessible through `/etc/passwd`, it is structured this way:  
 * **Username**: It is used when user logs in. It should be between 1 and 32 characters in length.
-* **Password**: An x character indicates that encrypted password is stored in /etc/shadow file. Please note that you need to use the passwd command to computes the hash of a password typed at the CLI or to store/update the hash of the password in /etc/shadow file.
+* **Password**: An x character indicates that encrypted password is stored in /etc/shadow file. Please note that you need to use the passwd command to computes the hash of a password typed at the CLI or to store/update the hash of the password in `/etc/shadow` file.
 * **User ID (UID)**: Each user must be assigned a user ID (UID). UID 0 (zero) is reserved for root and UIDs 1-99 are reserved for other predefined accounts. Further UID 100-999 are reserved by system for administrative and system accounts/groups.
-* **Group ID (GID)**: The primary group ID (stored in /etc/group file)
+* **Group ID (GID)**: The primary group ID (stored in `/etc/group` file)
 * **User ID Info**: The comment field. It allow you to add extra information about the users such as user’s full name, phone number etc. This field use by finger command.
 * **Home directory**: The absolute path to the directory the user will be in when they log in. If this directory does not exists then users directory becomes /
 * **Command/shell**: The absolute path of a command or shell (/bin/bash). Typically, this is a shell. Please note that it does not have to be a shell.
@@ -43,17 +43,18 @@ Groups are stored in `/etc/groups`, it's sturctured this way:
 * **Group ID (GID)**: Each user must be assigned a group ID. You can see this number in your /etc/passwd file.
 * **Group List**: It is a list of user names of users who are members of the group. The user names, must be separated by commas.
 
-https://www.cyberciti.biz/faq/understanding-etcgroup-file/
+_Source: https://www.cyberciti.biz/faq/understanding-etcgroup-file/_
 
 ## File permissions
 
 When using `ls -l` we can have the detailed informations about all files contained in the current/working directory.
 
-Among those information, we can see the permissions:
+Among those information, we can see the permissions. The first segment of the output represent the required permissions to access the file.
+
 `-rwxrwxrwx` can be decomposed in three triads:
-* Owner assigned permission
-* Group assigned permission
-* Other assigned permission
+* Owner assigned permission (2-4)
+* Group assigned permission (5-7)
+* Other assigned permission (8-10)
 
 For each triad, permissions are described as follow:
 

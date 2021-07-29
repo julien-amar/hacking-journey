@@ -12,9 +12,9 @@ Description: https://exploit.education/phoenix/stack-zero/
 
 ### Solution
 
-`gets` function is not limited on the buffer size, causing possible overflow of variable that are stored in lower addresses.
+`gets` function does not limit the buffer size, causing a possible overflow if the provided input is larger than the buffer size.
 
-The goal here is to send a content too fill the buffer, and override the `changeme` variable that is located next to the end of the `buffer` in the stack.
+The goal here is to send a content to fill the buffer, and override the `changeme` variable that is located next to the end of the `buffer` in the stack.
 
 ```
 $ ./stack-zero 
@@ -31,7 +31,7 @@ Description: https://exploit.education/phoenix/stack-one/
 
 ### Solution
 
-The solution is similar to the previous exercise, but we have to control what value we assign the variable `changeme` to.
+The solution is similar to the previous exercise, but we have to control the value we assign to the variable `changeme`.
 
 ```
 $ ./stack-one HELLO
@@ -51,7 +51,7 @@ Description: https://exploit.education/phoenix/stack-two/
 
 ### Solution
 
-The solution is similar to the previous exercise, but we have to control what value we assign the variable `changeme` to (using an environment variable).
+The solution is similar to the previous exercise, but we have to control the value we assign to the variable `changeme`. (using an environment variable)
 
 ```
 $ ExploitEducation=HELLO ./stack-two
@@ -73,7 +73,7 @@ Description: https://exploit.education/phoenix/stack-three/
 
 The solution is similar to the previous exercise, but we have to control the address the function pointer `fp` will call.
 
-We will assign it to the `complete_level` function (located at 0x0040069d)
+We will assign it to the `complete_level` function (located at `0x0040069d`)
 
 ```
 $ gdb ./stack-three
@@ -99,9 +99,9 @@ Description: https://exploit.education/phoenix/stack-four/
 
 The solution is similar to the previous exercise, but we have to control the control flow by overriding the `rip` address after returning from the main function.
 
-This address is stored at the begging of the stack frame. (See CPU / Stack for more information)
+This address is stored at the begging of the stack frame. (See `0x04 - CPU` for more information)
 
-We will assign it to the `complete_level` function (located at 0x0040069d)
+We will assign it to the `complete_level` function (located at `0x0040069d`)
 
 ```
 $ gdb ./stack-four 
@@ -127,11 +127,11 @@ Description: https://exploit.education/phoenix/stack-five/
 
 The goal of this challenge is to execute some code from the stack. To proceed, we will have to inject valid assembler code in the stack, update `rip` to point to it.
 
-Some piece of assembler, named `shellcode` are available in shell storm. They are designed to take control of the program workflow, by creating, by example, a remote shell.
+Some piece of assembler, named `shellcode` are available in `shell storm`. They are designed to take control of the program workflow, by creating, by example, a remote shell.
 
 In this challenge, we will use the following one: http://shell-storm.org/shellcode/files/shellcode-806.php
 
-Stack content can be different, from an execution to another. To avoid, jumping to the wrong address, we use the `nop slide` technique: https://en.wikipedia.org/wiki/NOP_slide
+From an execution to another, the Stack content can be different. To avoid, jumping to the wrong address, we use the `nop slide` technique: https://en.wikipedia.org/wiki/NOP_slide
 
 First, you need to disable stack address randomization: (root)
 ```
@@ -221,9 +221,9 @@ Program received signal SIGSEGV, Segmentation fault.
 0x00000000004005a3 in start_level ()
 ```
 
-We notice that the program will jump to `RRQQ` (0x52525151) and that :
+We notice that the program will jump to `RRQQ` (`0x52525151`).
 
-We will then prepare a payload:  
+We will then prepare a payload according to this structure:  
 `{buffer}{return_address}{nop_slide}{shellcode}` (where **return_address** should point to the **nop_slide**).
 
 ```python
@@ -263,7 +263,7 @@ Congratulation !
 
 ### Return to libc
 
-In order to prevent buffer overflow exploits, stack and heap memory areas can be marked (or not) as executable.
+In order to prevent buffer overflow exploits, stack and heap memory spaces can be marked (or not) as executable.
 
 To overcome this kind of limitation, you can proceed a **ret2libc** attack. This kind of attack rely on the fact that some binary instructions are already loaded with your program, in a dedicated executable memory section.
 
@@ -300,8 +300,8 @@ Documentation: https://en.wikipedia.org/wiki/Return-oriented_programming
 
 #### Protection
 
-Many protection are available against this kind of attack, most of them ensure the code is randomized or avoid using `call`/`ret` instructions.
-
-Pointer Authentication Codes (PAC), provides a protection by authenticating pointers by signing those using unused bits.
+As possible protections against those attacks:
+* the compiled code could be randomized or avoid using `call`/`ret` instructions.
+* Pointer Authentication Codes (PAC), provides a protection by authenticating pointers by signing those using unused bits.
 
 For more details: https://en.wikipedia.org/wiki/Return-oriented_programming#Defenses

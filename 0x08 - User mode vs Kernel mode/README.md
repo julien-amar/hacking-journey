@@ -24,11 +24,11 @@ _Source: https://en.wikipedia.org/wiki/Protection_ring_
 
 ### Syscalls
 
-Syscalls are executed through a `syscall` instruction. This instruction is always prefixed by a `mov eax, <code>` that indicates to the kernel what needs to be processed.
+Syscalls are triggered through a `syscall` instruction. This instruction is always prefixed by a `mov eax, <code>` that indicates to the kernel what needs to be processed.
 
 When the Kernel requires to access some data from/to the user land, it will copy that data from/to the user land using `copy_from_user` or `copy_to_user` methods.
 
-_For mroe details: https://filippo.io/linux-syscall-table/_
+_For more details: https://man7.org/linux/man-pages/man2/syscalls.2.html & https://filippo.io/linux-syscall-table/_
 
 ## Hypervisor mode
 
@@ -40,9 +40,10 @@ _Source: https://en.wikipedia.org/wiki/Protection_ring_
 
 ## Memory management
 
-Memory addresses are mapped in the memory management unit (MMU) into the virtual address space of a process.
+Memory addresses are mapped (by the Kernel) in the memory management unit (MMU) to provide processes a linear virtual addressable space.
 
-The processor's MMU detects a page fault, when a program try to access a memory page that is mapped in process addressable space. In this case, the operating system tries to make the required page accessible at the location in physical memory or terminates the program in cases of an illegal memory access.
+
+A page fault error (illegal memory access) is raised when a program try to access a memory page that is not mapped to the current process.
 
 _For more details: https://en.wikipedia.org/wiki/Memory_management_unit_
 

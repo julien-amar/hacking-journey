@@ -13,7 +13,7 @@ else:
 
 ## Execution
 
-To execute the script you are currently writing, you can type in `VIM`:
+To execute the python script you are currently writing, you can type the following sequence in `VIM`:  
 `:!python %`
 
 You can also execute it in a shell:
@@ -22,7 +22,7 @@ $> python print.py argument "with quotes"    and    spaces
 ['hello.py', 'argument', 'with quotes', 'and', 'spaces']
 ```
 
-You can also execute a single line of python to exploit a specific binary:
+You can also execute a single line of python (by example, to exploit a specific binary):
 ```sh
 $> python -c 'print "A"*(4+16*3+14)' | ./exploit
 Congratulation, you changed the variable, using a buffer overflow technique.
@@ -30,7 +30,7 @@ Congratulation, you changed the variable, using a buffer overflow technique.
 
 ## Conversions
 
-| From  | To    | Code                     | Result      |
+| From  | To    | Python Code              | Result      |
 |-------|-------|--------------------------|-------------|
 | dec   | bin   | bin(123)                 | '0b1111011' |
 | dec   | hex   | hex(123)                 | '0x7b'      |
@@ -45,7 +45,9 @@ Congratulation, you changed the variable, using a buffer overflow technique.
 
 ```python
 import struct
+
 value = struct.unpack("I", b"ABCD")[0]
+
 value # 1145258561
 hex(value) # '0x44434241'
 ```
@@ -57,6 +59,7 @@ The packing library handle the endianess:
 
 ```python
 value = struct.unpack(">I", b"ABCD")[0]
+
 value # 1094861636
 hex(value) # '0x41424344'
 ```
@@ -69,14 +72,14 @@ In order to get an interactive python shell when your script exit, you can eithe
 * specify the `PYTHONINSPECT` environement variable when running your script
 * specify the `-i` parameter.
 
-## Builtins
+## Built-in
 
-Builtin functions are globally available through this dictionary: `__builtins__.__dict__['print']('Hello !')`
-Using this dictionary, you can override default implementation of python builtins.
+Python built-in functions are globally available through this dictionary: `__builtins__.__dict__['print']('Hello !')`
+By overriding entries in this dictionary, you can change the default implementation of python built-in functions.
 
 ## VIM configuration
 
-Indentation is import when working in python, you can configure it using the following VIM command:
+Indentation is import when working in python, you can configure it using the following VIM sequence:
 ```
 :set expandtab shiftwidth=4 softtabstop=4
 ```

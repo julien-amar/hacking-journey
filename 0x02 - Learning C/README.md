@@ -19,16 +19,16 @@ int main(int argc, char*argv[]) {
 }
 ```
 
-`main` is the entry point of our program
-`argc` contains the number of arguments passed to the executable
-`argv` contains the values of arguments passed to the executable
+`main` is the entry point of our program.  
+`argc` contains the number of arguments passed to the executable.  
+`argv` contains the values of arguments passed to the executable.  
 
 All C functions are documented in `man`.
 By example, for `printf`,  you can access it through `man 3 printf`.
 
 ## Compilation
 
-You can now compile your program with the following:
+To compile a C program, you need a compiler (`cc` or `gcc`):
 ```sh
 $> gcc hello.c -o hello -Wall
 
@@ -60,4 +60,4 @@ Knock, knock, $USER
 
 ## Return value
 
-Return value is accessible through `$?` variable just after executing your program.
+The process return value is provided by the shell, through the `$?` variable, just after finishing your program execution.

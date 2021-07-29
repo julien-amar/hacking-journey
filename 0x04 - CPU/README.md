@@ -16,29 +16,29 @@ Some registers are just subpart of another register's value:
 ```
 
 Amoung those registers, some are specials:
-* the *Program Counter* / *Instruction pointer* (RIP/EIP/IP/PC depending on the architecture), indicate which instruction (by referencing its address) we are executing next
-* the zero flag is a register that is updated after an operation like an addition or substraction based on the result of the operation. It's value is set depending on the result of the operation (> 0).
+* the *Program Counter* / *Instruction pointer* (named RIP / EIP / IP / PC, depending on the architecture), indicate which instruction (by referencing its address) the process is executing next
+* the *zero flag* is a register that is updated after an operation like an addition or substraction based on the result of the operation. It's value is set depending on the result of the operation (> 0).
 
 ## Execution flow
 
-The control flow of the program is done through GO TO instructions:
+The control flow of the program is defined by a sequences of GO TO instructions:
 * jumps: `jmp`, `jne`, `je`
 * branch: `bne`, `be`
 * call: `call`
 
 ### Jump
 
-Jump instruction is similar to changing the `rip` register to the specified value.
+Jump instructions are similar to assigning the `rip` register to a specified value.
 
 ### Call
 
-A function can be called in multiple places, to allow this behaviour, we will need to know where to go back when the function returned its result. To do so, the address where the call (`rip` register) was made is pushed to the stack.
+A function can be called in multiple places. To allow this behaviour, the process needs to know where to go back when the function returns its result. To do so, the address where the call (`rip` register) was made is pushed to the `stack`.
 
-The `leave` & `ret` instructions, will store the function result in `eax`. and `pop` the address to continue where we originaly came from by restoring the previous stack frame information.
+The `leave` & `ret` instructions, will store the function result in `eax` and `pop` the address to continue where we originaly came from (by restoring the previous `stack frame` information).
 
 ## Memory management
 
-The number of register is limited, therefor, everything that does not fit in the registers should be stored in memory (HEAP or STACK).
+The number of register is limited, therefor, everything that does not fit in the registers should be stored in memory (`HEAP` or `STACK`).
 
 ```
 +-------------+ <- 0xffffffff
@@ -54,7 +54,7 @@ The number of register is limited, therefor, everything that does not fit in the
 |             |
 +-------------+ 
 |             |
-|  PROGRAM    |
+|   PROGRAM   |
 |             |
 +-------------+ <- 0x00000000
 ```
@@ -72,7 +72,7 @@ mov eax, [0x14]
 
 ## Stack
 
-The stack is a memory space where you can store some information through the execution of your program.
+The Stack is a memory space where you can store some contextual information (for the current function).
 
 The top of the stack is referenced by the register `sp`, `esp` or `rsp`.
 
@@ -104,5 +104,5 @@ Stack is composed of multiple frames, they compose the call stack. Each stack fr
 ## Resources
 
 You can pratice with the following website:
-* https://microcorruption.com/ (account: matasano)
+* https://microcorruption.com/ (account: matasano / password: matasano)
 * https://www.recurse.com/blog/7-understanding-c-by-learning-assembly

@@ -1,8 +1,8 @@
 # x86 vs x64
 
-We will study how a C program is compiled (using gcc 9.3.0), and what are the main difference between those two infrastructures.
+This study enable to understand `how a C program is compiled` (using gcc 9.3.0), and `what are the main difference between x86 & x64 infrastructures`.
 
-We do use the following compilation flags: `-O0 -ggdb3 --std=c99 -Wall -Wextra -pedantic`
+For this study, we disable some optimizations & enable debug information by using the following compilation flags: `-O0 -ggdb3 --std=c99 -Wall -Wextra -pedantic`
 
 | Difference                                      | x64                                                               | x86                                                  |
 | ----------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
@@ -19,7 +19,7 @@ We do use the following compilation flags: `-O0 -ggdb3 --std=c99 -Wall -Wextra -
 
 ## Binary comparer
 
-A binary comparer script is provided in this repository, to use it you must install `libc6-dev-i386` to make sure the program you compile will be able to be built in both x86 & x64.
+A binary comparer script is provided in this repository, to use it you must install `libc6-dev-i386` to be able to compile your source code for both x86 & x64 architectures.
 
 In order to run this script, you have to provide both the source file you want to compile and the function name you want to compare:
 

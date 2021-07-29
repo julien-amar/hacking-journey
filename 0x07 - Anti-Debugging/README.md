@@ -1,6 +1,6 @@
 # Anti Debugging techniques
 
-Debugger, decompilers & binary loaders implement their own version of binary parser to analyize/execute it.
+Debugger, decompilers & binary loaders implement their own version of binary parser to analyze/execute it.  
 It means that, there might be some way of preventing a specific binary to be loaded/debugged/analyzed by altering its structure.
 
 _Presentation: https://www.blackhat.com/docs/us-14/materials/arsenal/us-14-Hernandez-Melkor-Slides.pdf_
@@ -17,7 +17,7 @@ _Source: https://github.com/LiveOverflow/liveoverflow_youtube/blob/master/0x07_0
 
 ## Runtime technique
 
-Attached debugger could be checked at run time, using `ptrace` syscall:
+Debugger detection could also be checked at run time, using `ptrace` syscall:
 
 ```c
 if (ptrace(PTRACE_TRACEME, 0, 0, 0) == -1){

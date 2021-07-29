@@ -6,7 +6,7 @@ On linux, everything is represented as a file descriptor: https://en.wikipedia.o
 
 ## Standard Streams
 
-On linux, when a program is executed, it already has three predefined streams open and available for usesome special file descriptors:
+On linux, when a process is executed, it already has three predefined streams open and available for use:
 * stdin (0), used as standard program input.
 * stdout (1), used as standard program output.
 * stderr (2), used as standard program error output.
@@ -15,27 +15,34 @@ On linux, when a program is executed, it already has three predefined streams op
 
 ## Useful commands
 ```
-pwd                     Show the current/working directory
 man <command>           Show the manual page of specified <command>
+
 ls [-l] [-a]            Show the content of the current/working location
-cat <path>              Show the content of the file at <path>
 cd <path>               Change current/working directory to <path>
+pwd                     Show the current/working directory
 mkdir <name>            Create a new directory named <name>
-touch <name>            Create a new file named <name> / Change file timestamps
 rm [-r] <path>          Remove files or directories
+chmod +<perm> <path>    Add the specific permission to the path
+file <file>             Determine <file> type
+cat <path>              Show the content of the file at <path>
+touch <name>            Create a new file named <name> / Change file timestamps
+
 echo <text>             Display <text>
 uname [-a]              Print system information
+
 free [-h]               Display amount of free and used memory in the system
 df [-h]                 Report file system disk space usage
-du [-sh] <folders>      Show how much space the folders take
+du [-sh] <folders>      Show how much space folders take
 ps [aux]                Report a snapshot of the current processes
 pstree -aClp            Report the process/thread tree (with command line)
 lsof <file>             Show processes that open a given file
+
 id                      Print real and effective user and group IDs
+
 hexdump                 Display data in hex/oct/ascii/dec format
-file <file>             Determine <file> type
-chmod +<perm> <path>    Add the specific permission to the path
+
 ldd <binary>            Print shared object dependencies
+
 netstat -ac             Print network connections continuously
 netstat -pl             Print listening network connections with associated process identifier. 
 ```
@@ -44,7 +51,7 @@ An interactive MAN exploration solution is available here: https://explainshell.
 
 ## Package manager
 
-Each distribution use a different package maanger. Distribution based on debian (like ubuntu, kali, ...) use `apt`.
+Each Linux distribution use a different package maanger. Distributions based on debian (like Ubuntu, Kali, ...) use `apt`.
 
 To update `apt` based distribution, you need to uptdate your package cache and then upgrade your packages:
 ```sh
@@ -64,9 +71,9 @@ When it starts, it automatically load the following files:
 
 ### PATH variable
 
-Binaries are located through the `PATH` environment variable.
+To locate executable binaries the shell use the `PATH` environment variable.
 
-You can add additionnal location to look for binaries using the `export` built-in: `export  PATH=$PATH:/home/bin`
+You can add additionnal location to look for binaries (using the `export` built-in): `export  PATH=$PATH:/home/bin`
 
 `whereis <command> ` enables to locate a specific binary, source, and manual page files.
 
