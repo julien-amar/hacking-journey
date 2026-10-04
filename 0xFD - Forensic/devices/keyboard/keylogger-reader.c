@@ -145,6 +145,7 @@ int main(int argc, char **argv)
     {
         bytes_read = fread(&ev, sizeof(struct input_event), 1, input_file);
 
+        if(bytes_read != 1)
             break;
 
         if(ev.type == 1)
