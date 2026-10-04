@@ -144,7 +144,9 @@ int main(int argc, char **argv)
     do
     {
         bytes_read = fread(&ev, sizeof(struct input_event), 1, input_file);
- 
+
+            break;
+
         if(ev.type == 1)
         {
             switch(ev.value)
@@ -223,4 +225,6 @@ int main(int argc, char **argv)
  
     fclose(input_file);
     fclose(output_file);
+
+    return 0;
 }
