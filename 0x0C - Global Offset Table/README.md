@@ -27,7 +27,39 @@ Documentation: https://ctf101.org/binary-exploitation/relocation-read-only/
 
 # Procedure Linkage Table (PLT)
 
-To do the resolution, some trampoline functions (PLT) are injected in the process memory, to interface with the GOT, those functions are responsible for calling the dynamic linker.
+The GOT holds the *addresses*; the **PLT** holds the small **trampoline stubs**
+that the program actually calls. When your code calls `printf`, the compiler
+really emits a call to `printf@plt`. That stub jumps through the matching GOT
+entry — and, on the very first call, drives the dynamic linker to resolve the
+real address.
+
+### Lazy binding (first call vs. later calls)
+
+By default resolution is *lazy* — a function's real address is looked up only
+the first time it's called, not all at once at startup:
+
+```
+First call to printf:
+  call printf@plt
+      -> jmp *GOT[printf]      ; GOT still points back into the PLT stub...
+      -> push <reloc index>    ; ...so the stub asks the dynamic linker
+      -> jmp PLT[0]            ; linker resolves printf, WRITES its real
+                               ; address into GOT[printf], then calls it
+
+Every later call to printf:
+  call printf@plt
+      -> jmp *GOT[printf]      ; GOT now holds the real address -> direct jump
+```
+
+This is exactly why the GOT is writable by default (the linker patches it at
+runtime) and why that writability is useful to an attacker (chapters `0x0D`,
+`0x11`): overwrite `GOT[printf]` and the next `printf` call jumps wherever you
+wrote.
+
+You can watch it happen in GDB: set a breakpoint, call the function once, and
+compare the GOT entry before and after with `x/gx <got_addr>` — it changes from
+a PLT address to a libc address. The `got` / `plt` commands in pwndbg list both
+tables directly.
 
 # Dynamic loading
 

@@ -11,6 +11,10 @@ advanced subjects.
 > environments you own or are explicitly authorized to test (labs, CTFs, your
 > own machines). Attacking systems without permission is illegal.
 
+> **New here?** Start by setting up a safe practice environment — see
+> **[SETUP.md](SETUP.md)**. Unsure what an acronym means? Check the
+> **[GLOSSARY.md](GLOSSARY.md)**.
+
 ## Sources
 
 The material comes from several places:

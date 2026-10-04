@@ -1,5 +1,23 @@
 # Network Analyze
 
+## The layered model
+
+Network communication is built in layers, each adding its own header and relying
+on the one below. You don't need the full seven-layer OSI model to start; the
+practical TCP/IP view is enough:
+
+| Layer | Job | Examples | Addresses by |
+|-------|-----|----------|--------------|
+| Application | What the data *means* | HTTP, DNS, SSH, TLS | — |
+| Transport | Deliver to the right program, reliably or not | TCP, UDP | port number |
+| Internet | Get the packet to the right host | IP | IP address |
+| Link | Move bytes on the local wire | Ethernet, Wi-Fi | MAC address |
+
+So a web request is HTTP *inside* TCP *inside* IP *inside* Ethernet. When you
+analyse traffic in Wireshark you see exactly this nesting, one expandable block
+per layer. Knowing which layer a problem (or an attack) lives at tells you which
+header and which tool to reach for.
+
 ## Network interfaces
 
 Each network device is exposed through a network interface, which you use to
@@ -53,9 +71,64 @@ received, the sender re-transmits it. This reliability can add latency, since
 the receiver must wait for a lost packet before it can hand the stream to the
 application in the correct order.
 
+## Common application protocols
+
+Two application-layer protocols you meet constantly:
+
+### DNS (Domain Name System)
+
+DNS translates a human name (`example.com`) into an IP address before any
+connection is made. It normally runs over UDP port 53. Because the lookup
+usually happens in cleartext and *before* the real traffic, watching DNS is an
+easy way to see what hosts a program is trying to reach.
+
+```sh
+dig example.com            # query a name (shows the resolved A/AAAA records)
+nslookup example.com       # simpler, older equivalent
+```
+
+### HTTP (and HTTPS)
+
+HTTP is the request/response protocol the web runs on (chapter `0x12` covers
+attacking it). A request names a method and path plus headers; the response
+carries a status code and a body. Plain HTTP is readable on the wire; **HTTPS**
+is HTTP wrapped in TLS, so a sniffer sees only encrypted bytes unless you can
+decrypt it (e.g. by supplying session keys, or via the proxy/pinning-bypass
+tricks in chapter `0xFF`).
+
+## Capture tools
+
+Wireshark is the GUI analyzer, but two command-line tools are essential too:
+
+### nmap — what's listening
+
+`nmap` scans a host for open ports and tries to identify the services behind
+them. It's usually the first step when probing a target you're authorised to
+test.
+
+```sh
+nmap -sV 10.0.0.5          # scan common ports, detect service versions
+nmap -p- 10.0.0.5          # scan all 65535 TCP ports
+```
+
+### tcpdump — capture on the command line
+
+`tcpdump` captures packets without a GUI — ideal on a remote/headless box. Save
+to a `.pcap` and open it in Wireshark later.
+
+```sh
+sudo tcpdump -i eth0 -w capture.pcap        # capture everything on eth0 to a file
+sudo tcpdump -i lo 'tcp port 8000'          # live view, filtered to one port
+```
+
+> Capture filters (tcpdump/BPF syntax, applied *while capturing*) are not the
+> same as Wireshark's *display* filters (applied after). See `tshark` in chapter
+> `0xFD` for scripting extraction from a `.pcap`.
+
 ## Wireshark
 
-Wireshark is a network protocol analyzer. It lets you see what’s happening over a network/USB connection.
+Wireshark is a network protocol analyzer. It lets you see what’s happening over a network/USB connection. You can **capture live** on an interface (needs
+privileges) or **open a saved `.pcap`** file produced by `tcpdump`/`tshark`.
 
 Download: https://www.wireshark.org/#download
 

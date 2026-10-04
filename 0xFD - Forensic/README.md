@@ -136,4 +136,26 @@ Package name: `sudo apt install tshark`
 
 #### Keyboard
 
-A script is available in this repository (`./devices/keyboard/keylogger-reader.c`), to parse keyboard capture file.
+On Linux, keyboards appear as event devices under `/dev/input/eventX`, and each
+keypress/release is a fixed-size `struct input_event`. A capture of that raw
+stream (your own device, or one recovered as forensic evidence) can be replayed
+offline to reconstruct what was typed.
+
+The program [`./devices/keyboard/keylogger-reader.c`](devices/keyboard/keylogger-reader.c)
+parses such a capture file and reconstructs the text, mapping keycodes to
+characters (it ships with an **FR / AZERTY** layout — adjust the `keys[]` table
+for other layouts). It handles Shift and AltGr and annotates special keys like
+`[BACKSPACE]` and the arrow keys.
+
+```sh
+# Compile
+gcc keylogger-reader.c -o keylogger-reader
+
+# Parse a previously captured event stream into readable text
+./keylogger-reader <capture_file> <output.txt>
+```
+
+> To produce a capture in the first place (on a device you own) you would read
+> from the event device, e.g. `cat /dev/input/event3 > capture` — which needs
+> root. Identify the right event number via `cat /proc/bus/input/devices` or
+> `evtest`.

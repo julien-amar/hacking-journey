@@ -132,16 +132,22 @@ End-to-end, the workflow the helper scripts automate is:
 
 ## Installing split / XAPK bundles
 
-Some apps ship as an **XAPK** (a ZIP of a base APK plus split APKs). A plain
-`adb install` won't work. Unzip it, read `manifest.json`, and install the base
-and splits together:
+Some apps ship as an **XAPK** (a ZIP of a base APK plus split APKs — split by
+CPU ABI, screen density and language). A plain `adb install` rejects them: the
+base and all splits must be installed together in one transaction:
 
 ```sh
 adb install-multiple base.apk split_config.*.apk
 ```
 
-(See [`install_application.sh`](install_application.sh) for notes on parsing the
-manifest.)
+[`install_application.sh`](install_application.sh) automates both cases — it
+installs a plain `.apk` directly, or unzips an `.xapk`, runs `install-multiple`
+on every APK inside, and grants any extra permissions listed in the bundle's
+`manifest.json`:
+
+```sh
+./install_application.sh app.xapk
+```
 
 ## Online analysis
 
