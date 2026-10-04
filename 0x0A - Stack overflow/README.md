@@ -1,8 +1,37 @@
 # Stack overflow
 
-There is multiple way of controlling the flow of a program, by overriding some part of the memory. In this section we will focus on stack memory overflow.
+There are several ways to hijack a program's control flow by overwriting part of
+its memory. This chapter focuses on the **stack buffer overflow**, the classic
+starting point for binary exploitation.
 
-For those examples, you will need to install Phoenix: https://exploit.education/phoenix/getting-started/
+## The idea
+
+A function's local buffers, its saved base pointer, and its **return address**
+all live together in the same stack frame (see chapter `0x04`). If the program
+writes more data into a buffer than it can hold — and doesn't check the size —
+the extra bytes spill over the adjacent memory. By choosing exactly what those
+extra bytes are, an attacker can overwrite:
+
+* a neighbouring variable (change a value the program then trusts),
+* a function pointer (redirect an indirect call), or
+* the saved return address (redirect `ret` to anywhere — arbitrary execution).
+
+The general method for every example below is the same:
+
+1. **Find the offset** — how many bytes until you reach the thing you want to
+   overwrite. A cyclic/De Bruijn pattern (pwndbg's `cyclic`, pwntools'
+   `cyclic`) makes this a one-step lookup instead of guesswork.
+2. **Decide the target value** — the value, or the address, to overwrite with.
+3. **Build the payload** — `<padding><target>`, packing addresses in the right
+   endianness (see chapter `0x03`).
+4. **Deliver it** — via argument, stdin, or environment variable.
+
+> **Note on the Python in the examples.** The payloads below use Python 2
+> syntax (`print "A"*64`). On Python 3 that is `print("A"*64)`, and to emit raw
+> bytes cleanly you'd use pwntools or `sys.stdout.buffer.write(...)`
+> (see chapter `0x03`).
+
+For these examples you will need to install Phoenix: https://exploit.education/phoenix/getting-started/
 
 ## Stack Zero
 
@@ -258,6 +287,23 @@ Linux host 4.15.0-101-generic #102-Ubuntu SMP Mon May 11 10:07:26 UTC 2020 x86_6
 ```
 
 Congratulation !
+
+## Modern mitigations
+
+The simple examples above work because Phoenix disables the defences a modern
+system enables by default. In the real world you will meet these, and defeating
+each one is its own technique:
+
+| Mitigation | What it does | How it's defeated (high level) |
+|------------|--------------|--------------------------------|
+| **Stack canary** | A random value placed before the return address; checked before `ret`. If the overflow changed it, the program aborts. | Leak the canary value and include it unchanged in the payload. |
+| **NX / DEP** (non-executable stack) | Marks the stack non-executable, so injected shellcode on the stack won't run. | Reuse existing executable code — **ret2libc** / **ROP** (below). |
+| **ASLR** | Randomises the base addresses of the stack, heap and libraries each run, so you can't hard-code them. | Leak an address at runtime to compute the rest; or brute-force on 32-bit. |
+| **PIE** | Randomises the executable's own base address too (not just libraries). | Same as ASLR — needs an info leak of a program address. |
+| **RELRO** | Makes the GOT read-only after startup (see chapter `0x0C`). | Target something else, or attack before relocation. |
+
+You can check which of these a binary uses with `checksec --file=<binary>`
+(see chapter `0x06`). The result shapes the whole exploit strategy.
 
 ## Stack Protection
 

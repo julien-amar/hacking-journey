@@ -1,18 +1,27 @@
 # Reversing binary
 
-Each operating system (Linux, Windows, Mac)  have it's own standard for structuring binaries.
+*Reversing* a binary means working backwards from a compiled program to
+understand what it does, without having the source code. The first steps are
+always the cheapest: identify the file type, pull out readable strings, and look
+at the headers and sections before reaching for a disassembler.
 
-* Linux: https://en.wikipedia.org/wiki/Executable_and_Linkable_Format (ELF, Executable and Linkable Format)  
-* Windows: https://en.wikipedia.org/wiki/Portable_Executable (PE, Portable Executable)  
-* Mac: https://en.wikipedia.org/wiki/Mach-O (Mach object)  
+Each operating system (Linux, Windows, macOS) has its own standard for
+structuring executable files:
+
+* Linux: https://en.wikipedia.org/wiki/Executable_and_Linkable_Format (ELF, Executable and Linkable Format)
+* Windows: https://en.wikipedia.org/wiki/Portable_Executable (PE, Portable Executable)
+* macOS: https://en.wikipedia.org/wiki/Mach-O (Mach-O, Mach object)
 
 ## file
 
-In Windows, the registry database link file extension with compatible softwares.
+On Windows, the registry database links a file extension to the software that
+can open it.
 
-On other systems, `file <file>` enable to determine a specific file type (based on magic table).
+On other systems, the extension is just a hint; `file <file>` determines the
+real type by inspecting the file's *magic bytes* (a signature near the start of
+the file).
 
-The indexed magic database is accessible at those locations:
+The indexed magic database is available at these locations:
 * `/etc/magic` (local definition)
 * in a binary format `/usr/share/misc/magic.mgc`
 * spread over multiple fragment in `/usr/share/misc/magic`
@@ -32,16 +41,27 @@ _Documentation: https://docs.microsoft.com/en-us/cpp/build/reference/dumpbin-ref
 
 ## objdump (PE or ELF files)
 
-Objdump enables to retrieve information from a binary file (headers, debugging informations, symbols, ...)
+`objdump` retrieves information from a binary file (headers, debugging
+information, symbols, …).
 
-`objdump -d <file>` enables to disassemble a specific binary.
-`objdump -x <file>` enables to display all available header information, including the symbol table and relocation entries.
+* `objdump -d <file>` — disassemble the executable sections.
+* `objdump -M intel -d <file>` — same, but in the (often easier to read) Intel
+  syntax instead of the default AT&T.
+* `objdump -x <file>` — display all header information, including the symbol
+  table and relocation entries.
 
 _For more details: https://www.man7.org/linux/man-pages/man1/objdump.1.html_
 
+> Related: `readelf -a <file>` and `nm <file>` are also handy for ELF headers
+> and symbol tables respectively. To quickly check which exploit mitigations a
+> binary was built with (NX, stack canary, PIE, RELRO), use
+> [`checksec`](https://github.com/slimm609/checksec.sh) — `checksec --file=<bin>`.
+
 ### Headers
 
-Binary headers enable to define supported capabilities (by example: is Stack declared as an executable memory segment; suitable information for a possible buffer overflow exploit)
+Binary headers describe the file's layout and capabilities — for example,
+whether the stack is marked as an executable memory segment, which tells you
+whether a plain stack-based shellcode exploit is even possible:
 
 ```
 STACK off    0x0000000000000000 vaddr 0x0000000000000000 paddr 0x0000000000000000 align 2**4
@@ -50,18 +70,27 @@ STACK off    0x0000000000000000 vaddr 0x0000000000000000 paddr 0x000000000000000
 
 ### Sections
 
-On Linux, binaries are splitted over several sections, among them:
-* `.text` section holds the application code
-* `.data` section holds our mutable data.
-* `.rodata` section holds our readonly data, such as binary's strings
+On Linux, binaries are split into several sections, among them:
+* `.text` holds the application code (the instructions)
+* `.data` holds initialised, mutable global data
+* `.bss` holds uninitialised global data (zeroed at startup)
+* `.rodata` holds read-only data, such as the binary's string literals
 
 _For more details on Linux ELFsections: https://www.intezer.com/blog/research/executable-linkable-format-101-part1-sections-segments/_
 
 _For more details on Windows PE sections: https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#special-sections_
 
-## strace, ltrace, ftrace, ktrace
+## Dynamic analysis: strace, ltrace, ftrace, ktrace
 
-To enable the interaction between a program & the Linux Kernel (to provide system wide capabilities), special functions are provided. They are called `syscalls` (for system calls).
+The tools above are *static* (they inspect the file at rest). The `*trace` tools
+are *dynamic*: they run the program and report what it does. Watching the
+syscalls and library calls a program makes often reveals its logic faster than
+reading the disassembly — e.g. which files it opens, what it reads, what it
+compares your input against.
+
+To let a program interact with the Linux kernel (for system-wide capabilities
+like opening files or creating processes), the kernel exposes special entry
+points called `syscalls` (system calls).
 
 _For more details, see chapter `0x08 - User mode vs Kernel mode`_
 

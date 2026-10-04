@@ -1,12 +1,26 @@
-# Heap
+# Heap overflow
 
-There is multiple way of controlling the flow of a program, by overriding some part of the memory. In this section we will focus on heap memory overflow.
+The stack isn't the only place you can corrupt memory. This chapter focuses on
+the **heap** — the region used for dynamic allocations (`malloc`/`free`).
 
-By example, you can override the content of the heap, to override variable or the GOT.
+Where stack overflows typically target the return address, heap attacks target:
 
-To got further, you have to understand the structure on how malloc manage the heap allocation: https://sourceware.org/glibc/wiki/MallocInternals
+* **adjacent heap data** — overflow one allocation into the next to corrupt a
+  variable, a struct field, or a function pointer stored on the heap;
+* **heap metadata** — the allocator keeps bookkeeping data (chunk sizes, free-list
+  pointers) *inline* between allocations; corrupting it can turn `free`/`malloc`
+  into an arbitrary write;
+* **dangling pointers** — a **use-after-free** reuses memory that was freed but
+  is still referenced, letting attacker-controlled data stand in for a freed
+  object (see Heap Two below).
 
-For those examples, you will need to install Phoenix: https://exploit.education/phoenix/getting-started/
+A very common follow-on is to overwrite a **GOT** entry (chapter `0x0C`) so that
+a later library call jumps to code you chose (see Heap One below).
+
+To go further you need to understand how `malloc` structures its allocations:
+https://sourceware.org/glibc/wiki/MallocInternals
+
+For these examples you will need to install Phoenix: https://exploit.education/phoenix/getting-started/
 
 ## Heap Zero
 

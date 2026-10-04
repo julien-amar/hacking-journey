@@ -1,16 +1,26 @@
 # Global Offset Table (GOT)
 
-In order to reduce the binary size, from reusable portion of code that can be extrated and shared: a library (*.so, *.dll) could be provided.  
+Reusable code can be extracted into a shared **library** (`*.so` on Linux,
+`*.dll` on Windows) so that many programs share one copy instead of each
+bundling its own — this keeps binaries smaller.
 
-All required libraries are loaded when the process starts.  
+The required libraries are loaded when the process starts. But the program still
+needs to know *at which address* each library function ended up — and with ASLR
+enabled (see chapter `0x0A`), that address is different every run, so it can't
+be hard-coded at compile time.
 
-However, the program have to know on which address those functions are available (especially when ASLR is enabled).
+The **GOT** solves this: it is a table of pointers to external functions. When
+code calls, say, `printf`, it actually jumps through the GOT entry for `printf`.
 
-The GOT's purpose is to answer this problematic, it basically keep a reference to exported library functions.
+By default the GOT is writable, because the real addresses are resolved lazily
+by the dynamic loader (`ld.so`) on each function's *first* call, and written
+into the table at that point.
 
-By default, the GOT is writable, as the resolution of such function is done by the loader (ld.so) during the very first call.
-
-For your information, some protection exist to make the GOT readonly.
+> **Why attackers care.** Because the GOT is a table of function pointers that
+> the program jumps through, overwriting a GOT entry (e.g. via a heap overflow
+> or a format-string bug) redirects a later call to an address of your choosing
+> — see the Heap One example in chapter `0x0D`. The **Full RELRO** mitigation
+> resolves everything at startup and then makes the GOT read-only to block this.
 
 Documentation: https://ctf101.org/binary-exploitation/what-is-the-got/
 Documentation: https://ctf101.org/binary-exploitation/relocation-read-only/

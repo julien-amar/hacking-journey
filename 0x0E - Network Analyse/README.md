@@ -2,19 +2,27 @@
 
 ## Network interfaces
 
-Every network devices, is asigned a network interface, to interact with it.
+Each network device is exposed through a network interface, which you use to
+interact with it.
 
-However, a loopback (lo) device is available. It is a virtual network interace that your computer use to communicate with itself.
-
-By convention, the IPv4 assigned to this interface is `127.0.0.1` and `::1` for IPv6.
+There is also a **loopback** (`lo`) device: a virtual interface a computer uses
+to talk to itself. By convention its address is `127.0.0.1` for IPv4 and `::1`
+for IPv6. Local services and the proxy example below use it.
 
 ## Protocols
 
-The most common protocols you might encounter are:
-* `TCP`: help to understand which process/program on this target machine is expecting to recieve this packet. (data exchange)
-* `IP`: determine the target we want to reach (routing).
+The two protocols you meet most often sit at different layers and do different
+jobs:
 
-`TCP/IP` combination is used by the Internet by web browsers/email clients/etc.
+* **IP** (Internet Protocol) decides *which machine* a packet is sent to — it
+  handles addressing and routing across networks.
+* **TCP** (Transmission Control Protocol) decides *which program on that machine*
+  should receive the data — via **port numbers** — and provides a reliable,
+  ordered byte stream on top of IP.
+
+Together, `TCP/IP` is what the web, email clients and most internet
+applications run on. (The other common transport is **UDP**, which is
+connectionless and unreliable but lighter — used for DNS, video, games, etc.)
 
 ## TCP (Transmission Control Protocol)
 
@@ -29,16 +37,21 @@ A TCP connection is established through 3 steps, to exchange a sequence number:
 
 _Source: http://www.tcpipguide.com/free/t_TCPConnectionEstablishmentSequenceNumberSynchroniz-2.htm_
 
-After connection is established, the sequence number will enable to detect possible loss of packet or be resiliant to timeout.
+Once the connection is established, sequence numbers let both sides detect lost
+packets and recover from timeouts.
 
-If the data contained in a paquet is too big to fit in, multiple paquets will be emited. (ending data transmission with a `PSH` flag)
+If the data is too big for a single packet, it is split across several packets
+(the end of a data burst is marked with the `PSH` flag).
 
-When the initiator is closing the connection, the following sequence is emited to alert the server:
-* `FIN`: Disconnection request by client
-* `FIN/ACK`: Disconnection & Acknowledgment from the server
-* `ACK`: Acknowledgment from the client, that connection had been closed on both sides.
+When the initiator closes the connection, this sequence is exchanged:
+* `FIN`: disconnection request by the client
+* `FIN/ACK`: disconnection and acknowledgment from the server
+* `ACK`: acknowledgment from the client that the connection is closed on both sides
 
-TCP is resiliant to `package loss`, if a paquet had not been aknowledged as recieved, it will be re-emited by the sender. This process could cause some latency issues, as the receiver must wait for the lost packet to be recieved to continue presenting the stream in proper order.
+TCP is resilient to **packet loss**: if a packet is not acknowledged as
+received, the sender re-transmits it. This reliability can add latency, since
+the receiver must wait for a lost packet before it can hand the stream to the
+application in the correct order.
 
 ## Wireshark
 
@@ -62,19 +75,31 @@ Documentation: https://www.wireshark.org/docs/wsug_html_chunked/ChCustProtocolDi
 
 #### Use filters
 
-Here is a list of simple wireshark filters:
+Here is a list of simple Wireshark display filters:
 
 ```
-tcp.port=42 && tcp.len>0       List packet (containing data) over a TCP connection port 42
+tcp.port == 42 && tcp.len > 0   Packets carrying data on TCP port 42
+ip.addr == 10.0.0.5             Any packet to or from 10.0.0.5
+http                            Only HTTP traffic
+dns                             Only DNS traffic
+tcp.flags.syn == 1 && tcp.flags.ack == 0    Connection attempts (bare SYN)
+frame contains "password"       Any packet whose bytes contain this string
 ```
+
+> Tip: right-click a packet and choose *Follow → TCP Stream* to reassemble and
+> read an entire conversation as one continuous exchange — very handy for
+> plaintext protocols.
 
 ## Packet Injection
 
-TCP/UDP proxies enables to inspect & forge packets on the fly. Making protocol analysis much easier.
+A TCP/UDP proxy sits between a client and a server and relays traffic, letting
+you inspect and even forge packets on the fly. This makes analysing (and
+tampering with) a protocol much easier than passive sniffing alone.
 
 ## Proxy Implementation
 
-A sample implemnentation is available in `proxy.py`, it allow packet inspection & injection with code hot reload.
+A sample implementation is available in [`proxy.py`](proxy.py); it allows packet
+inspection and injection with code hot-reload.
 
 ```sh
 # Start the proxy

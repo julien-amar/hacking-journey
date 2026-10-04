@@ -37,7 +37,7 @@ _Source: https://www.cyberciti.biz/faq/understanding-etcshadow-file/_
 
 ## Groups
 
-Groups are stored in `/etc/groups`, it's sturctured this way:  
+Groups are stored in `/etc/group` (note: no trailing "s"). It is structured this way:  
 * **group_name**: It is the name of group. If you run ls -l command, you will see this name printed in the group field.
 * **Password**: Generally password is not used, hence it is empty/blank. It can store encrypted password. This is useful to implement privileged groups.
 * **Group ID (GID)**: Each user must be assigned a group ID. You can see this number in your /etc/passwd file.
@@ -73,5 +73,38 @@ For each triad, permissions are described as follow:
 | S           <td colspan=2>Same as s, but x is not set; rare on regular files, and useless on folders                                  |
 | t           <td colspan=2>The sticky bit, allow the files in that directory to only be removed by the owner.                          |
 | T           <td colspan=2>Same as t, but x is not set; rare on regular files, and useless on folders.                                 |
+
+### Octal (numeric) notation
+
+The same permissions are often written as a 3- (or 4-) digit octal number, which
+is what you pass to `chmod`. Each triad is the sum of:
+
+* read `r` = **4**
+* write `w` = **2**
+* execute `x` = **1**
+
+So `rwxr-xr--` = `754`. Common values:
+
+| Octal | Symbolic    | Typical use                         |
+|-------|-------------|-------------------------------------|
+| `644` | `rw-r--r--` | a normal file (owner writes, others read) |
+| `600` | `rw-------` | a private file (only the owner)     |
+| `755` | `rwxr-xr-x` | a program or directory everyone can use |
+| `700` | `rwx------` | a private program/directory         |
+
+```sh
+chmod 755 script.sh     # set permissions numerically
+chmod u+x script.sh     # or symbolically: add execute for the owner
+```
+
+An optional leading digit sets the special bits: `4` = setuid, `2` = setgid,
+`1` = sticky. For example `chmod 4755 file` sets setuid plus `755`.
+
+> **Why setuid matters for exploitation.** A setuid-root binary runs with root's
+> privileges even when launched by an unprivileged user. If such a binary has a
+> vulnerability (a buffer overflow, a command injection, an unsafe `PATH`
+> lookup), exploiting it can grant root. Hunting for setuid binaries is a
+> standard privilege-escalation step:
+> `find / -perm -4000 -type f 2>/dev/null`.
 
 _Source: https://www.liquidweb.com/kb/how-do-i-set-up-setuid-setgid-and-sticky-bits-on-linux/_

@@ -1,10 +1,27 @@
 # Debugging
 
+A debugger lets you run a program under your control — pause it, step through it
+one instruction at a time, and inspect or change registers and memory. For
+reverse engineering and exploitation it is the single most important tool: it is
+how you watch *what the CPU actually does* and confirm where your input lands in
+memory.
+
 ## GDB
 
 GDB is a portable debugger that runs on many Unix-like systems and works for many programming languages, including Ada, C, C++, Objective-C, Free Pascal, Fortran, Go, and partially others.
 
 _Source: https://en.wikipedia.org/wiki/GNU_Debugger_
+
+> **Install an enhancement plugin first.** Stock GDB is spartan. One of these
+> plugins adds a readable, colourised view of the registers, stack and
+> disassembly at every stop — hugely helpful for exploitation:
+> * [pwndbg](https://github.com/pwndbg/pwndbg) (recommended, exploitation-focused)
+> * [GEF](https://github.com/hugsy/gef)
+> * [peda](https://github.com/longld/peda)
+>
+> They add commands too, e.g. pwndbg's `cyclic <n>` generates a De Bruijn
+> pattern and `cyclic -l <value>` tells you the exact offset that overwrote a
+> register — which removes most of the guesswork when finding an overflow offset.
 
 ### Basic commands
 
@@ -69,6 +86,20 @@ i[nfo] threads                      List all threads
 thread <value>                      Select a specific thread
 ```
 
+#### Examining memory
+
+The `x` command examines memory in a chosen format and is the workhorse for
+inspecting the stack and buffers:
+
+```
+x/<n><f><u> <location>              Examine n units, format f, unit size u
+x/24wx $rsp                         Show 24 words (4-byte) in hex, starting at RSP
+x/2i  $rip                          Show the next 2 instructions at RIP
+x/s   <location>                    Show the string at a location
+```
+Format letters: `x` hex, `d` decimal, `s` string, `i` instruction.
+Unit sizes: `b` byte, `h` halfword (2), `w` word (4), `g` giant (8).
+
 #### Mapping
 ```
 i[nfo] proc mappings                Display memory mapping structure of our process
@@ -76,7 +107,7 @@ i[nfo] proc mappings                Display memory mapping structure of our proc
 
 #### Hooks
 
-When a breakpoint is reached, a hook can be defined to display: the registers, the stack & and the two following instructions:
+When a breakpoint is reached, a hook can be defined to display the registers, the stack and the next two instructions:
 ```
 define hook-stop
 info registers
@@ -100,11 +131,13 @@ gdb <binary> <core dump>
 
 Once the dump is loaded, the user is able to access the stack, registers, heap, etc.
 
-## Alternative debuggers
+## Alternative tools
 
+* Ghidra: https://ghidra-sre.org/ _(free, open-source; excellent decompiler — see chapter 0x0F)_
 * Hopper v4: https://www.hopperapp.com/ _(for Linux or Mac)_
 * IDA: https://www.hex-rays.com/products/ida/main-differences-between-ida-editions/ _(for Windows, Linux or Mac)_
 * Radare2 & Cutter: https://rada.re/n/ & https://cutter.re/ _(multi-platform)_
+* x64dbg: https://x64dbg.com/ _(Windows user-mode debugger)_
 
 ### Radare2
 

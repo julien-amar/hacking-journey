@@ -17,8 +17,7 @@ done
 
 echo "Retrieve list of running process"
 
-if frida-ps -U  1>/dev/null 2>&1 ; then
-else
+if ! frida-ps -U 1>/dev/null 2>&1 ; then
 	echo "Start frida server"
 
 	adb shell $FRIDA_REMOTE_PATH/frida-server 1> $FRIDA_SERVER_LOG 2>&1 &
@@ -29,6 +28,6 @@ frida-ps -U
 echo "Which application do you want to inject the script to ?"
 read app
 
-echo "Inject script into "
+echo "Inject script into $app"
 
-frida --codeshare pcipolloni/universal-android-ssl-pinning-bypass-with-frida -f $app --no-paus
+frida -U --codeshare pcipolloni/universal-android-ssl-pinning-bypass-with-frida -f $app --no-pause

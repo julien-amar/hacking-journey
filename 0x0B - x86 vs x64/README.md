@@ -1,8 +1,13 @@
 # x86 vs x64
 
-This study enable to understand `how a C program is compiled` (using gcc 9.3.0), and `what are the main difference between x86 & x64 infrastructures`.
+This study helps you understand *how a C program is compiled* (using gcc 9.3.0)
+and *what the main differences are between the x86 (32-bit) and x64 (64-bit)
+architectures*. These differences matter in practice: the register names,
+pointer sizes and especially the calling convention change how you read a
+disassembly and how you build a payload (see chapters `0x04` and `0x0A`).
 
-For this study, we disable some optimizations & enable debug information by using the following compilation flags: `-O0 -ggdb3 --std=c99 -Wall -Wextra -pedantic`
+For this study we disable optimisations and enable debug information with the
+following compilation flags: `-O0 -ggdb3 --std=c99 -Wall -Wextra -pedantic`
 
 | Difference                                      | x64                                                               | x86                                                  |
 | ----------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
@@ -27,4 +32,4 @@ In order to run this script, you have to provide both the source file you want t
 
 Here is a screenshot of what you should expect:
 
-![Screenshot](https://github.com/julien-amar/hacking-journey/raw/master/0x0B%20-%20x86%20vs%20x64/bin-compare.png)
+![Screenshot](bin-compare.png)

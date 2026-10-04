@@ -1,5 +1,24 @@
 # User mode vs Kernel mode
 
+**In short:** the CPU runs code at different privilege levels. Your normal
+programs run in *user mode* (restricted — they cannot touch hardware or other
+processes directly). The operating-system kernel runs in *kernel mode* (full
+control of the machine). The only sanctioned way for a user-mode program to ask
+the kernel to do something privileged (open a file, create a process, send a
+packet) is a **system call**. This boundary is central to security: a huge
+amount of exploitation is about tricking privileged code into doing something on
+a less-privileged attacker's behalf.
+
+```
+         Ring 3  user applications        (least privileged)
+         Ring 2  }
+         Ring 1  }  rarely used on modern general-purpose OSes
+         Ring 0  operating-system kernel   (most privileged)
+        Ring -1  hypervisor (VT-x / AMD-V)
+```
+
+## Protection rings
+
 ```
 In computer science, hierarchical protection domains, often called protection rings, are mechanisms to protect data and functionality from faults (by improving fault tolerance) and malicious behavior (by providing computer security). This approach is diametrically opposite to that of capability-based security.
 

@@ -1,11 +1,27 @@
 # Forensic
 
+Digital forensics is about recovering and analysing evidence from an artifact
+someone hands you — a memory image, a disk image, a packet capture, a suspicious
+document. The goal is usually to answer "what happened / what was hidden here",
+which maps cleanly onto the "forensics" and "stego" categories of most CTFs.
+
 ## Memory dump
+
+A memory (RAM) dump is a snapshot of a machine's volatile memory. It can contain
+running processes, open network connections, command history, cached
+credentials and encryption keys — things that never touch the disk.
 
 ### Volatility
 
-[Volatility](https://github.com/volatilityfoundation/volatility3) is one of the best open source software programs for analyzing RAM in 32 bit/64 bit systems.
-It supports analysis for Linux, Windows, Mac, and Android systems.
+[Volatility](https://github.com/volatilityfoundation/volatility3) is one of the
+best open-source frameworks for analysing RAM images from 32-/64-bit systems. It
+supports Linux, Windows, macOS and Android.
+
+> **Volatility 2 vs 3.** The commands below use **Volatility 2** syntax, which
+> needs a `--profile` matching the exact OS build. **Volatility 3** (the current
+> version) dropped `--profile` (it auto-detects) and renamed plugins with an
+> OS prefix, e.g. `windows.pslist`, `windows.hashdump`, `windows.netscan`. Check
+> which version you have with `vol.py --help` or `vol --help`.
 
 ```
 volatility -f <dump> imageinfo                                          Dump information
@@ -85,6 +101,26 @@ Package name: `sudo apt install exif`
 ### Others
 
 As a more generic tool, to retrieve file meta data (for Office, PDF, pictures & archives files), you can use: https://www.extractmetadata.com/
+
+## Steganography
+
+Steganography hides data *inside* another file (often an image or audio file) so
+that it looks ordinary. Useful tools:
+
+```
+exiftool <file>              Read all metadata (broader than the exif tool above)
+binwalk <file>               Detect files embedded inside another file (see above)
+steghide extract -sf <file>  Extract data hidden by steghide (often passphrase-protected)
+zsteg <file.png>             Detect LSB-hidden data in PNG/BMP images
+strings <file>               Sometimes the flag is just sitting there as text
+```
+
+* **StegSolve** (Java GUI) steps through colour planes and bit planes of an
+  image to reveal hidden pixels: http://www.caesum.com/handbook/stego.htm
+* For audio, inspect the **spectrogram** (e.g. in Audacity or Sonic Visualiser)
+  — hidden text is sometimes drawn into the frequencies.
+* Online, [Aperi'Solve](https://www.aperisolve.com/) runs several of these at
+  once on an uploaded image.
 
 ## Device/Network analysis
 
