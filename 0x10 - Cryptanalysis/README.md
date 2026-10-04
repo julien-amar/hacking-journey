@@ -56,6 +56,58 @@ openssl enc -d -aes-256-cbc -in <file> -out <output> -pass pass:<key> -nosalt -i
 If no initialisation vector (IV) is given, it defaults to all zeros:
 `00000000000000000000000000000000`.
 
+## Why crypto breaks (fundamentals)
+
+In CTFs you rarely break the *maths* of a cipher — you exploit how it was
+*used*. The recurring weaknesses:
+
+### ECB mode leaks patterns
+
+Block ciphers split data into fixed-size blocks. In **ECB** mode each block is
+encrypted independently, so **identical plaintext blocks produce identical
+ciphertext blocks**. Structure in the input survives encryption — the famous
+"[ECB penguin](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB))"
+image is still clearly a penguin after encryption. Tell-tale sign: repeating
+16-byte chunks in the ciphertext. Modes like CBC/CTR/GCM fix this with an IV so
+equal blocks differ.
+
+### XOR "encryption"
+
+XOR with a repeating key is extremely common in challenges and trivially
+reversible, because XOR is its own inverse: `cipher XOR key = plain` and
+`cipher XOR plain = key`.
+
+```python
+# If you know (or can guess) part of the plaintext, you recover the key:
+key = bytes(c ^ p for c, p in zip(cipher, known_plaintext))
+```
+
+Single-byte XOR is brute-forceable over all 256 keys; repeating-key XOR is
+broken by finding the key length (Hamming distance) then solving each position
+as single-byte XOR — exactly the [Cryptopals](https://cryptopals.com/) set 1
+exercises.
+
+### Weak / predictable randomness
+
+If keys, IVs or tokens come from a predictable source — `rand()` seeded with
+`time(NULL)` (chapter `0x0C`), a small keyspace, or a non-cryptographic PRNG —
+you can regenerate or brute-force them. Always ask *where did this secret come
+from?*
+
+### Hash pitfalls
+
+* **MD5 / SHA-1** are broken for collision resistance — never trust them for
+  integrity/signatures.
+* **Unsalted** password hashes fall to the lookup databases above instantly.
+* **Length-extension**: with MD5/SHA-1/SHA-2, knowing `H(secret ‖ message)` and
+  the length of `secret` lets you compute `H(secret ‖ message ‖ padding ‖ extra)`
+  *without* knowing the secret. HMAC exists to prevent this.
+
+### A good training ground
+
+[Cryptopals](https://cryptopals.com/) walks you through all of the above by
+building the attacks yourself — highly recommended.
+
 ## Password cracking
 
 Both tools below take a list of hashes and a wordlist, hash each candidate, and

@@ -43,11 +43,71 @@ _Source: https://en.wikipedia.org/wiki/Protection_ring_
 
 ### Syscalls
 
-Syscalls are triggered through a `syscall` instruction. This instruction is always prefixed by a `mov eax, <code>` that indicates to the kernel what needs to be processed.
+Syscalls are triggered through a `syscall` instruction (on x86-64). Before it,
+the program puts the **syscall number** in `rax` and the arguments in the usual
+argument registers — `rdi, rsi, rdx, r10, r8, r9` (note: `r10`, *not* `rcx` as
+in a normal function call, because `syscall` clobbers `rcx`). The return value
+comes back in `rax`.
 
-When the Kernel requires to access some data from/to the user land, it will copy that data from/to the user land using `copy_from_user` or `copy_to_user` methods.
+When the kernel needs to move data across the boundary, it does so with
+`copy_from_user` / `copy_to_user` rather than touching user pointers directly —
+precisely so a malicious user-space address can't trick the kernel into reading
+or writing memory it shouldn't.
 
-_For more details: https://man7.org/linux/man-pages/man2/syscalls.2.html & https://filippo.io/linux-syscall-table/_
+#### Hands-on: "hello" with raw syscalls
+
+This writes to stdout (`write`, syscall `1`) then exits (`exit`, syscall `60`) —
+no libc involved. Save as `hello.s`:
+
+```asm
+section .data
+msg:    db  "hello via syscall", 10      ; 10 = newline
+len     equ $ - msg
+
+section .text
+global _start
+_start:
+    mov rax, 1          ; syscall number: write
+    mov rdi, 1          ; fd 1 = stdout
+    mov rsi, msg        ; buffer
+    mov rdx, len        ; length
+    syscall
+
+    mov rax, 60         ; syscall number: exit
+    mov rdi, 0          ; exit status 0
+    syscall
+```
+
+Assemble, link and run:
+
+```sh
+nasm -f elf64 hello.s -o hello.o
+ld hello.o -o hello
+./hello                 # -> hello via syscall
+```
+
+#### Seeing it from the outside
+
+`strace` (chapter `0x06`) shows the same two syscalls the program makes:
+
+```sh
+$ strace ./hello
+write(1, "hello via syscall\n", 18)     = 18
+exit(0)                                  = ?
+```
+
+This is the whole user/kernel story in miniature: user code prepares arguments,
+executes `syscall` to cross into the kernel, the kernel does the privileged work
+and returns. The numbers differ per architecture — look them up here:
+
+#### Finding syscall numbers
+
+* x86-64 table (number ↔ name ↔ arguments): https://filippo.io/linux-syscall-table/
+* On a running system: `ausyscall --dump`, or read
+  `/usr/include/asm/unistd_64.h`.
+* `man 2 <name>` documents each one (e.g. `man 2 write`).
+
+_For more details: https://man7.org/linux/man-pages/man2/syscalls.2.html_
 
 ## Hypervisor mode
 

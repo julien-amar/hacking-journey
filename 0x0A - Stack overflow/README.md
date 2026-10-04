@@ -288,6 +288,50 @@ Linux host 4.15.0-101-generic #102-Ubuntu SMP Mon May 11 10:07:26 UTC 2020 x86_6
 
 Congratulation !
 
+## Understanding shellcode
+
+Stack Five jumped to a blob of bytes labelled "shellcode". It's worth
+understanding what that blob actually is rather than copy-pasting it.
+
+**Shellcode** is a small, self-contained piece of machine code — position-
+independent and usually free of null bytes — that you inject and execute. The
+classic goal is to launch a shell (hence the name) by making the `execve`
+syscall (chapter `0x08`) on `"/bin/sh"`. In C the intent is simply:
+
+```c
+execve("/bin/sh", NULL, NULL);
+```
+
+As x86-64 assembly that becomes roughly: put the syscall number for `execve`
+(`59`) in `rax`, a pointer to the string `"/bin/sh"` in `rdi`, zero in
+`rsi`/`rdx`, then `syscall`.
+
+Two constraints shape real shellcode:
+
+* **No null bytes.** It is often injected through string functions (`strcpy`,
+  `gets`) that stop at the first `\0`. So instead of `mov rax, 59` (which encodes
+  zero bytes) you see tricks like `xor`-ing a register to zero it, or pushing the
+  `"/bin/sh"` string onto the stack a few bytes at a time.
+* **Position independence.** You don't know the exact address it will land at, so
+  it must not hard-code addresses — it builds the string pointer from the stack
+  pointer at runtime.
+
+You rarely write it from scratch. Options, easiest first:
+
+```sh
+# pwntools: generate architecture-correct shellcode
+python3 -c 'from pwn import *; context.arch="amd64"; print(asm(shellcraft.sh()))'
+
+# msfvenom: with a null-byte "bad char" filter
+msfvenom -p linux/x64/exec CMD=/bin/sh -b '\x00' -f python
+```
+
+Or take a vetted one from [shell-storm's database](http://shell-storm.org/shellcode/).
+The **NOP slide** (`\x90` repeated) used in Stack Five is the companion trick:
+by prepending a long run of "do nothing" instructions, you only need your jump
+to land *somewhere* in the slide, which then flows down into the real shellcode —
+compensating for the stack address varying between runs.
+
 ## Modern mitigations
 
 The simple examples above work because Phoenix disables the defences a modern

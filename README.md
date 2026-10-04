@@ -55,6 +55,7 @@ right order. The low numbers build up the foundations; the `0xF*` numbers are
 | `0x0B` | [x86 vs x64](0x0B%20-%20x86%20vs%20x64/README.md) | How C compiles differently on 32- vs 64-bit |
 | `0x0C` | [Global Offset Table](0x0C%20-%20Global%20Offset%20Table/README.md) | GOT/PLT, dynamic loading, `LD_PRELOAD` hooking |
 | `0x0D` | [Heap overflow](0x0D%20-%20Heap%20overflow/README.md) | Corrupting heap metadata and use-after-free |
+| `0x11` | [Format String](0x11%20-%20Format%20String/README.md) | Arbitrary read/write via `printf(user_input)` and `%n` |
 
 ### Other topics
 
@@ -62,8 +63,9 @@ right order. The low numbers build up the foundations; the `0xF*` numbers are
 |---|---------|-------------------|
 | `0x0E` | [Network Analyse](0x0E%20-%20Network%20Analyse/README.md) | TCP/IP, Wireshark, a hackable TCP/UDP proxy |
 | `0x0F` | [Decompilers](0x0F%20-%20Decompilers/README.md) | Tools to turn binaries back into readable code |
-| `0x10` | [Cryptanalysis](0x10%20-%20Cryptanalysis/README.md) | Encoding/decoding, hashing, password cracking |
-| `0xFD` | [Forensic](0xFD%20-%20Forensic/README.md) | Memory/disk dumps, file carving, metadata |
+| `0x10` | [Cryptanalysis](0x10%20-%20Cryptanalysis/README.md) | Encoding/decoding, hashing, password cracking, why crypto breaks |
+| `0x12` | [Web Security](0x12%20-%20Web%20Security/README.md) | SQLi, XSS, SSRF, IDOR and the other OWASP classes |
+| `0xFD` | [Forensic](0xFD%20-%20Forensic/README.md) | Memory/disk dumps, file carving, metadata, stego |
 | `0xFE` | [Process Threads](0xFE%20-%20Process%20Threads/README.md) | The `/proc` pseudo-filesystem |
 | `0xFF` | [Android](0xFF%20-%20android/README.md) | Decompiling APKs, Frida hooking, SSL pinning |
 
@@ -75,7 +77,10 @@ If you are starting from scratch, a good order is:
 2. Understand what the CPU is actually doing (`0x04`), then learn to watch it
    with a debugger (`0x05`).
 3. Learn to read a compiled binary (`0x06`, `0x0B`).
-4. Put it together with your first real exploits (`0x0A` → `0x0C` → `0x0D`).
+4. Put it together with your first real exploits (`0x0A` → `0x11` → `0x0C` → `0x0D`).
+
+Web hacking (`0x12`) is a largely independent track — you can start it any time,
+and it needs less low-level background than the binary-exploitation chapters.
 
 ## Where to practice
 
@@ -96,8 +101,12 @@ Root-Me challenge categories still to work through:
 * <https://www.root-me.org/fr/Challenges/Programmation/>
 * <https://www.root-me.org/fr/Challenges/Realiste/>
 * <https://www.root-me.org/fr/Challenges/Reseau/>
-* <https://www.root-me.org/fr/Challenges/Steganographie/>
-* <https://www.root-me.org/fr/Challenges/Web-Client/>
-* <https://www.root-me.org/fr/Challenges/Web-Serveur/>
+* <https://www.root-me.org/fr/Challenges/Steganographie/> (basics now covered in `0xFD`)
+* <https://www.root-me.org/fr/Challenges/Web-Client/> (see `0x12`)
+* <https://www.root-me.org/fr/Challenges/Web-Serveur/> (see `0x12`)
 
-Revisit and expand chapter `0x0E` (Network Analyse).
+Other ideas to expand:
+
+* Revisit and expand chapter `0x0E` (Network Analyse).
+* A dedicated **shellcoding** chapter (currently summarised inside `0x0A`).
+* Hands-on **crypto** challenges (Cryptopals), building on `0x10`.

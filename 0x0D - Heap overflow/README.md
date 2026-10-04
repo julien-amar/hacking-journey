@@ -178,4 +178,66 @@ Description: https://exploit.education/phoenix/heap-three/
 
 ### Solution
 
-The solution is well described in Lucas Bader's blog, I highly encourage you to read it: https://www.lucas-bader.com/ctf/2019/05/02/heap3
+This level is the classic **unlink() exploitation** against an old `dlmalloc`
+allocator. It is more involved than the previous ones, so here is the idea
+first, then the mechanics. A full byte-for-byte write-up is on Lucas Bader's
+blog — I highly encourage you to read it alongside this:
+https://www.lucas-bader.com/ctf/2019/05/02/heap3
+
+#### How the allocator stores chunks
+
+With this allocator, each heap chunk is preceded by a small header, and **free**
+chunks additionally store two pointers — `fd` (forward) and `bk` (backward) —
+that link them into a doubly-linked free list:
+
+```
+chunk P (free):
++------------------+
+| prev_size        |
+| size   (low bits = flags, e.g. PREV_INUSE) |
+| fd  ->  next free chunk  |
+| bk  ->  prev free chunk  |
+| ... unused space ...     |
++------------------+
+```
+
+#### The vulnerable operation
+
+When a chunk is freed next to another free chunk, the allocator *merges* them
+and first removes the neighbour from the list with `unlink(P)`, which does
+roughly:
+
+```c
+// Remove P from the doubly-linked free list
+P->fd->bk = P->bk;   //  write P->bk  to the address (P->fd + offset_of_bk)
+P->bk->fd = P->fd;   //  write P->fd  to the address (P->bk + offset_of_fd)
+```
+
+If an attacker controls `P->fd` and `P->bk`, those two lines become an
+**arbitrary write**: "store value `BK` at address `FD + offset`" (and a second
+write the other way). This is the whole exploit primitive.
+
+#### Turning the overflow into code execution
+
+1. **Overflow** from the first allocation into the *next* chunk's header so you
+   control its `size` field (clearing `PREV_INUSE` so the allocator believes the
+   neighbour is free and calls `unlink`) and its forged `fd` / `bk` pointers.
+2. **Choose the write target.** A reliable target is a **GOT entry** (chapter
+   `0x0C`) for a function the program calls soon after the `free`, e.g. `puts`.
+   Set `fd = &GOT[puts] - offset_of_bk` so the unlink write lands on that GOT
+   entry.
+3. **Choose the value.** Set `bk` to the address of the `winner` function (find
+   it in GDB with `info functions` / `disassemble winner`).
+4. After the `free`, the GOT entry for `puts` now points at `winner`; the next
+   `puts(...)` call transfers control there.
+
+> Caveats (why the blog matters for the exact bytes): the two unlink writes
+> happen *both* ways, so the value you write also gets dereferenced — you
+> usually point into a small stub/landing area to stay valid; and on the 64-bit
+> build, null bytes in addresses interfere with the string copy, exactly as in
+> Heap Zero. Work the x86 build first.
+
+This "overwrite a function pointer via allocator metadata" pattern is the heap
+analogue of the stack's "overwrite the return address", and modern allocators
+add integrity checks (`unlink` now verifies `P->fd->bk == P` and
+`P->bk->fd == P`) specifically to kill it.
